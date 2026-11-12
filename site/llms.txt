@@ -1,0 +1,46 @@
+# Tawsiya (توصية)
+
+> Tawsiya is a Dubai-based studio that builds brands for small and medium businesses in the UAE and helps them get recommended by AI assistants (ChatGPT, Gemini, Claude, Google AI, Perplexity). "Tawsiya" means "recommendation" in Arabic. Arabic-first, fully bilingual (Arabic and English).
+
+- Website (Arabic): https://gettawsiya.com/
+- Website (English): https://gettawsiya.com/en/
+- Email: hello@gettawsiya.com
+- Location: Dubai, United Arab Emirates
+- Focus sectors: clinics, restaurants and cafés, real estate, salons, professional services
+
+## Sector pages
+- Clinics: https://gettawsiya.com/en/clinics/ (Arabic: https://gettawsiya.com/clinics/)
+- Restaurants & cafés: https://gettawsiya.com/en/restaurants/ (Arabic: https://gettawsiya.com/restaurants/)
+- Real estate: https://gettawsiya.com/en/real-estate/ (Arabic: https://gettawsiya.com/real-estate/)
+- Salons & spas: https://gettawsiya.com/en/salons/ (Arabic: https://gettawsiya.com/salons/)
+- Professional services: https://gettawsiya.com/en/professional-services/ (Arabic: https://gettawsiya.com/professional-services/)
+
+## Method (5 stages)
+1. Discover: ask AI the questions customers ask; record which businesses get named.
+2. Simulate: test names, messages and offers on simulated customer personas before spending.
+3. Build: identity, website, content and a verified fact page that AI can read.
+4. Run: Brand Brain writes in the brand's voice; a WhatsApp assistant answers and books customers in Arabic and English.
+5. Prove: a monthly Tawsiya Score — how often AI names the client versus competitors on an agreed set of test questions.
+
+## Offers (AED, excluding 5% VAT)
+- AI Check: free. 10 customer questions across 5 AI engines (50 answers), checked by a person; a personal report with the business's logo, score, competitors named and 3 fixes, within 48 hours.
+- 7-Day AI Fix: 2,900 one-time.
+- Growth: 3,500 per month (monthly score, Brand Brain content, WhatsApp assistant).
+- Brand Build: from 18,000.
+- Pay on results: a small deposit; the success fee is charged only if the client appears in an agreed, written set of test questions within 90 days.
+
+## What Tawsiya does not claim
+Tawsiya does not guarantee rankings or first place in AI answers. AI answers change; success is measured on an agreed written test.
+The AI Check shown on the website is an animated demo with sample data; real checks are run by the Tawsiya team.
+
+## FAQ
+- **What does Tawsiya do?** We build brands for small and medium businesses in the UAE and make them easy for AI assistants to understand, trust and recommend. That covers strategy, identity, website, content, a verified fact page, a WhatsApp assistant and a monthly score.
+- **Do you guarantee first place?** No. Nobody can honestly guarantee a ranking in AI answers, because the answers change from day to day and by how a question is asked. What we do guarantee is the method: we agree on a written set of test questions with you, run them the same way every month, and on the pay-on-results option you only pay the success fee if that agreed test is met within 90 days.
+- **How does the free AI Check work?** You tell us your business name, type and city. A person on our team asks 10 realistic customer questions in ChatGPT, Gemini, Claude, Google AI and Perplexity, reads every answer, and sends you a report with your logo: your Tawsiya Score, who got named instead, and three priority fixes, within 48 hours. No card needed.
+- **Is the check on this website live?** Not yet. The check on this page is an animated demo with sample numbers that shows what you’ll receive. Your real check is run by our team and delivered within 48 hours.
+- **What is a Tawsiya Score?** It’s the share of agreed test answers in which AI names your business, measured across five engines. Each question is asked several times, so one lucky or unlucky answer doesn’t swing the result.
+- **What is a verified fact page?** A clear page on your own site with the facts AI needs: what you offer, where you are, opening hours, price ranges, languages and how to book. It’s backed by structured data and kept consistent with your listings elsewhere.
+- **Do you work in Arabic and English?** Yes. We are Arabic-first: right-to-left design, natural Arabic that suits Gulf customers, and English that’s equally polished. Most of our work is delivered in both.
+- **What does the WhatsApp assistant do?** It answers common questions and books appointments in Arabic and English, using your real availability and rules. Anything sensitive or unusual is handed to your team. It runs on the WhatsApp Business Platform.
+- **How long until results?** The foundation is usually in place within the first week or two. AI assistants then take time to pick up changes, so we measure over 90 days and report monthly.
+- **Which businesses do you work with?** We’re starting with clinics, restaurants and cafés, real estate, salons and professional services in Dubai, then across the UAE.
