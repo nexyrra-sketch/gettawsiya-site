@@ -159,6 +159,8 @@
     $$("[data-bizname]", consoleEl).forEach(function (s) { s.textContent = name; });
     var catLabel = (I18N.cats && I18N.cats[cat]) || cat;
     var msg = fill(I18N.msg, { name: name, cat: catLabel, city: city });
+    var linkIn = $("#link"), link = linkIn ? (linkIn.value || "").trim() : "";
+    if (link) msg += "\n" + (I18N.linkLabel || "Link") + ": " + link;
     var wa = $("[data-check-contact]", consoleEl), mail = $("[data-check-mail]", consoleEl);
     if (wa) wa.href = contactHref(msg);
     if (mail) mail.href = "mailto:" + (CFG.email || "") + "?subject=Tawsiya%20AI%20Check&body=" + encodeURIComponent(msg);
@@ -181,7 +183,7 @@
   });
   if (nameIn) nameIn.addEventListener("input", function () { if (nameIn.value.trim() && err) { err.hidden = true; nameIn.setAttribute("aria-invalid", "false"); } });
   var finalForm = $("#final-form");
-  if (finalForm) finalForm.addEventListener("submit", function (e) {
+  if (finalForm && !finalForm.hasAttribute("data-url-form")) finalForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var inp = $("#biz2", finalForm), v = (inp.value || "").trim();
     if (!v) { inp.focus(); inp.setAttribute("aria-invalid", "true"); return; }
@@ -211,7 +213,7 @@
   }
 
   /* ---------- App preview tabs (WAI-ARIA tabs pattern) ---------- */
-  var tabs = $$('[role="tab"]');
+  var tabs = $$('.tablist [role="tab"]');
   var seen = {};
   function selectTab(tab, focus) {
     tabs.forEach(function (t) {
@@ -303,4 +305,128 @@
   var waBtn = $("[data-wa-play]");
   if (waBtn) waBtn.addEventListener("click", playWA);
 
+
+  /* ---------- Brand journey: six stages (WAI-ARIA tabs) ---------- */
+  var jtabs = $$(".jtab"), jbar = $("[data-jbar]");
+  function selectJ(tab, focus) {
+    var idx = jtabs.indexOf(tab);
+    jtabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1;
+      var pnl = doc.getElementById(t.getAttribute("aria-controls"));
+      pnl.hidden = !on;
+      if (on) { pnl.classList.remove("enter"); void pnl.offsetWidth; pnl.classList.add("enter"); }
+    });
+    if (jbar) jbar.style.setProperty("--p", ((idx + 1) / jtabs.length * 100) + "%");
+    if (focus) tab.focus();
+  }
+  jtabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { selectJ(t); });
+    t.addEventListener("keydown", function (e) {
+      var rtl = root.dir === "rtl", k = e.key, n = null;
+      if (k === (rtl ? "ArrowLeft" : "ArrowRight") || k === "ArrowDown") n = i + 1;
+      if (k === (rtl ? "ArrowRight" : "ArrowLeft") || k === "ArrowUp") n = i - 1;
+      if (k === "Home") n = 0;
+      if (k === "End") n = jtabs.length - 1;
+      if (n === null) return;
+      e.preventDefault();
+      selectJ(jtabs[(n + jtabs.length) % jtabs.length], true);
+    });
+  });
+  if (jtabs.length) selectJ(jtabs[0]);
+
+  /* ---------- Start a project: three-step wizard -> WhatsApp or email ---------- */
+  var wz = $("#wizard");
+  if (wz) {
+    var W = I18N.wz || {}, step = 1, panes = $$(".wz-pane", wz), inds = $$("[data-wz-ind]", wz);
+    var nextBtn = $("[data-wz-next]", wz), backBtn = $("[data-wz-back]", wz), nextLabel = nextBtn.querySelector("span");
+    var nextText = nextLabel.textContent;
+    function val(n) { var el = wz.elements[n]; return el ? (el.value || "").trim() : ""; }
+    function intentEl() { return $('input[name="intent"]:checked', wz); }
+    function compose() {
+      var L = W.labels || {}, ie = intentEl();
+      var rows = [[L.intent, ie ? ie.getAttribute("data-label") : ""], [L.name, val("name")], [L.brand, val("brand")], [L.city, selText(wz.elements.city)],
+                  [L.link, val("link")], [L.budget, selText(wz.elements.budget)], [L.time, selText(wz.elements.time)], [L.msg, val("msg")]].filter(function (r) { return r[1]; });
+      return rows;
+    }
+    function go(n) {
+      step = n; wz.setAttribute("data-step", n);
+      panes.forEach(function (p) { p.classList.toggle("on", +p.getAttribute("data-pane") === n); });
+      inds.forEach(function (li) { var k = +li.getAttribute("data-wz-ind"); li.classList.toggle("done", k < n); if (k === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current"); });
+      backBtn.hidden = n === 1; nextBtn.hidden = n === 3;
+      if (n === 3) {
+        var rows = compose(), dl = $("[data-wz-review]", wz);
+        dl.innerHTML = "";
+        rows.forEach(function (r) { var d = doc.createElement("div"), dt = doc.createElement("dt"), dd = doc.createElement("dd"); dt.textContent = r[0]; dd.textContent = r[1]; d.appendChild(dt); d.appendChild(dd); dl.appendChild(d); });
+        var text = W.msg + "\n" + rows.map(function (r) { return r[0] + ": " + r[1]; }).join("\n");
+        $("[data-wz-wa]", wz).href = contactHref(text);
+        $("[data-wz-mail]", wz).href = "mailto:" + (CFG.email || "") + "?subject=" + encodeURIComponent("Tawsiya project") + "&body=" + encodeURIComponent(text);
+      }
+      var focusEl = $('.wz-pane.on input, .wz-pane.on a', wz);
+      if (focusEl && n !== 1) focusEl.focus({ preventScroll: true });
+    }
+    function logLead() {
+      try {
+        var p = {}; compose().forEach(function (r) { p[r[0]] = r[1]; });
+        var ie = intentEl();
+        fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true, credentials: "same-origin",
+          body: JSON.stringify({ kind: "project", name: val("name"), site: val("link"), intent: ie ? ie.value : "", payload: p, lang: I18N.lang, consent: true }) }).catch(function () {});
+      } catch (e) {}
+    }
+    var sentOnce = false;
+    $$("[data-wz-wa], [data-wz-mail]", wz).forEach(function (a) { a.addEventListener("click", function () { if (!sentOnce) { sentOnce = true; logLead(); } }); });
+    wz.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (step === 1) { var ok = !!intentEl(); $("#wz-err1").hidden = ok; if (!ok) { $('input[name="intent"]', wz).focus(); return; } go(2); }
+      else if (step === 2) { var nm = val("name"), inp = wz.elements.name; inp.setAttribute("aria-invalid", nm ? "false" : "true"); $("#wz-err2").hidden = !!nm; if (!nm) { inp.focus(); return; } go(3); }
+    });
+    backBtn.addEventListener("click", function () { go(Math.max(1, step - 1)); });
+    $$('input[name="intent"]', wz).forEach(function (r) { r.addEventListener("change", function () { $("#wz-err1").hidden = true; }); });
+    // buttons elsewhere on the page can pre-select a goal
+    $$("[data-intent]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        var href = a.getAttribute("href") || "";
+        if (href.indexOf("#start") === -1) return;
+        var r = $('input[name="intent"][value="' + a.getAttribute("data-intent") + '"]', wz);
+        if (r) { r.checked = true; $("#wz-err1").hidden = true; }
+        go(1);
+      });
+    });
+    go(1);
+  }
+
+  /* ---------- Gentle reveal on scroll ---------- */
+  if ("IntersectionObserver" in window && !rm()) {
+    var revealEls = $$(".v4-head, .st, .wc, .ck, .da-box, .ch-box, .ft, .pf-grid li, .pc, .wk, .pj-fig, .pj-3 > div");
+    revealEls.forEach(function (el) { el.classList.add("rv"); });
+    var ro = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); ro.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    revealEls.forEach(function (el) { ro.observe(el); });
+  }
+
+  /* ---------- v4: website check boxes -> the Score page, with the site filled in ---------- */
+  $$("[data-url-form]").forEach(function (f) {
+    var inp = $("input", f), err = $(".v4-err", f);
+    function valid(v) { return /[a-z0-9\u0600-\u06FF-]+\.[a-z\u0600-\u06FF]{2,}/i.test(v) || /^@[\w.]{2,}$/.test(v) || /instagram\.com\//i.test(v); }
+    inp.addEventListener("input", function () { err.hidden = true; inp.setAttribute("aria-invalid", "false"); });
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = (inp.value || "").trim().replace(/^https?:\/\//i, "");
+      if (!valid(v)) { err.hidden = false; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+      window.location.href = (I18N.scoreUrl || "/score/") + "?site=" + encodeURIComponent(v) + "#score-card";
+    });
+  });
+  $$("[data-focus-url]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var target = $("#final-form") || $("#check-form-hero");
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: rm() ? "auto" : "smooth", block: "center" });
+      setTimeout(function () { var i = $("input", target); if (i) i.focus({ preventScroll: true }); }, rm() ? 0 : 450);
+    });
+  });
+  if ("serviceWorker" in navigator && location.protocol === "https:" || location.hostname === "localhost") {
+    try { navigator.serviceWorker && navigator.serviceWorker.register("/sw.js").catch(function () {}); } catch (e) {}
+  }
 })();

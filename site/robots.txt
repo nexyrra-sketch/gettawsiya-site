@@ -3,5 +3,14 @@ User-agent: *
 Allow: /
 Disallow: /signin/
 Disallow: /en/signin/
+Disallow: /dashboard/
+Disallow: /en/dashboard/
+Disallow: /partners/dashboard/
+Disallow: /en/partners/dashboard/
+Disallow: /admin/
+Disallow: /score/r/
+Disallow: /en/score/r/
+Disallow: /api/
+Disallow: /r/
 
 Sitemap: https://gettawsiya.com/sitemap.xml

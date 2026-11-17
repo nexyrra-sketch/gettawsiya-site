@@ -1,8 +1,25 @@
 {
   "name": "Tawsiya توصية",
   "short_name": "Tawsiya",
-  "start_url": "/",
+  "id": "/",
+  "start_url": "/dashboard/?source=app",
+  "scope": "/",
   "display": "standalone",
+  "description": "AI visibility tracking for UAE businesses: weekly checks of ChatGPT, Gemini, Claude and Perplexity answers.",
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/dashboard/"
+    },
+    {
+      "name": "Free Score",
+      "url": "/score/"
+    },
+    {
+      "name": "Plans",
+      "url": "/plans/"
+    }
+  ],
   "background_color": "#0C0E13",
   "theme_color": "#0C0E13",
   "lang": "ar",

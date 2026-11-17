@@ -1,12 +1,50 @@
 # Tawsiya (توصية)
 
-> Tawsiya is a Dubai-based studio that builds brands for small and medium businesses in the UAE and helps them get recommended by AI assistants (ChatGPT, Gemini, Claude, Google AI, Perplexity). "Tawsiya" means "recommendation" in Arabic. Arabic-first, fully bilingual (Arabic and English).
+> Tawsiya is a Dubai-based brand studio and AI visibility company. It builds distinctive brands for UAE businesses, engineers their digital presence, makes them discoverable and recommendable by AI assistants (ChatGPT, Gemini, Claude, Perplexity, Google AI), and builds growth systems such as WhatsApp assistants and lead generation. "Tawsiya" means "recommendation" in Arabic. Arabic-first, fully bilingual (Arabic and English).
 
 - Website (Arabic): https://gettawsiya.com/
 - Website (English): https://gettawsiya.com/en/
 - Email: hello@gettawsiya.com
+- WhatsApp: +971507901022
 - Location: Dubai, United Arab Emirates
-- Focus sectors: clinics, restaurants and cafés, real estate, salons, professional services
+
+## Capabilities
+1. Brand creation and development: business concept and positioning, naming, logo and visual identity, brand strategy and guidelines, websites, e-commerce, marketing strategy, social media identity, launch campaigns, storytelling.
+2. AI visibility and recommendations: AI recommendation audits across ChatGPT, Gemini, Claude, Perplexity and Google AI, competitor visibility analysis, AI search optimisation, structured business information, authority and content development, continuous monitoring with a monthly Tawsiya Score.
+3. Business growth and AI automation: AI customer assistants, WhatsApp automation, lead generation, customer acquisition, conversion optimisation, content systems, business intelligence, digital transformation.
+
+## Brand process (6 stages)
+Discover, Strategize, Create, Build, Launch, Grow.
+
+## Packages (AED, excluding 5% VAT) Indicative; confirmed in each written proposal.
+- Free Tawsiya Score: automatic 15-point website check plus real customer questions asked to ChatGPT, Gemini, Claude and Perplexity; private report in minutes.
+- Paid plans (AED, prepaid monthly through Ziina, no automatic renewal): weekly automatic checks, competitor tracking and a fix list. Current plans: https://gettawsiya.com/en/plans/
+- Brand Launch: from 15,000.
+- Brand Transformation: from 25,000.
+- AI Visibility: 199 setup (7-day fix), then 3,500 per month; pay-on-results option.
+- Growth Systems: from 4,500 per month.
+- Complete Business Transformation: from 60,000.
+
+## Standards and tools
+- Tawsiya Score: a public 15-point checklist of what makes a UAE business easy for AI assistants to find and describe correctly, plus the share of AI answers that name the business. Free request, checked by a person: https://gettawsiya.com/en/score/
+- Method (how the Score is calculated): https://gettawsiya.com/en/method/
+- UAE AI Visibility Index: published editions by sector, real checks only, with the method shown: https://gettawsiya.com/en/ai-index/
+- Tawsiya Verified: public pages with a business's checked facts (name, area, hours, contact, services) in JSON-LD, plus a badge and a JSON file: https://gettawsiya.com/en/verified/
+- Partner programme for accountants, agencies, consultants and PRO firms: https://gettawsiya.com/en/partners/
+- Guides: https://gettawsiya.com/en/guides/
+
+## Portfolio
+The portfolio contains ten fictional brand concepts created by the Tawsiya studio to demonstrate its process. They are not clients.
+- AURELLE (Luxury skincare): https://gettawsiya.com/en/work/aurelle/
+- mondri (Specialty coffee): https://gettawsiya.com/en/work/mondri/
+- NUVORA (Modern property): https://gettawsiya.com/en/work/nuvora/
+- VELORA (Lifestyle and home): https://gettawsiya.com/en/work/velora/
+- Atelier Nōr (Luxury fashion and accessories): https://gettawsiya.com/en/work/atelier-nor/
+- Kinza (Food and hospitality): https://gettawsiya.com/en/work/kinza/
+- NOVENTRA (Technology and business solutions): https://gettawsiya.com/en/work/noventra/
+- VITALORA (Fitness and wellness): https://gettawsiya.com/en/work/vitalora/
+- FORMA (Architecture and interior design): https://gettawsiya.com/en/work/forma/
+- solvéa (Modern personal care): https://gettawsiya.com/en/work/solvea/
 
 ## Sector pages
 - Clinics: https://gettawsiya.com/en/clinics/ (Arabic: https://gettawsiya.com/clinics/)
@@ -15,29 +53,20 @@
 - Salons & spas: https://gettawsiya.com/en/salons/ (Arabic: https://gettawsiya.com/salons/)
 - Professional services: https://gettawsiya.com/en/professional-services/ (Arabic: https://gettawsiya.com/professional-services/)
 
-## Method (5 stages)
-1. Discover: ask AI the questions customers ask; record which businesses get named.
-2. Simulate: test names, messages and offers on simulated customer personas before spending.
-3. Build: identity, website, content and a verified fact page that AI can read.
-4. Run: Brand Brain writes in the brand's voice; a WhatsApp assistant answers and books customers in Arabic and English.
-5. Prove: a monthly Tawsiya Score — how often AI names the client versus competitors on an agreed set of test questions.
-
-## Offers (AED, excluding 5% VAT)
-- AI Check: free. 10 customer questions across 5 AI engines (50 answers), checked by a person; a personal report with the business's logo, score, competitors named and 3 fixes, within 48 hours.
-- 7-Day AI Fix: 2,900 one-time.
-- Growth: 3,500 per month (monthly score, Brand Brain content, WhatsApp assistant).
-- Brand Build: from 18,000.
-- Pay on results: a small deposit; the success fee is charged only if the client appears in an agreed, written set of test questions within 90 days.
-
 ## What Tawsiya does not claim
 Tawsiya does not guarantee rankings or first place in AI answers. AI answers change; success is measured on an agreed written test.
-The AI Check shown on the website is an animated demo with sample data; real checks are run by the Tawsiya team.
+The animated dashboard and check on the home page are demos with sample data; the free Score and client dashboards use real checks.
 
 ## FAQ
+- **Do you build brands from zero?** Yes. Brand creation is half of what we do: positioning, naming, logo and identity, guidelines, website, e-commerce, social media identity and launch campaigns. Then we make the brand visible to AI assistants and build the systems that bring customers.
+- **Are the brands in your portfolio real clients?** No. The ten brands in our portfolio are original concepts created by our studio to show how we work, and every project page says so. As clients give permission, their real projects will be added and clearly marked.
+- **How long does a new brand take?** A Brand Launch usually takes 6 to 10 weeks from the first workshop to launch, depending on the website and how quickly decisions are made. You get a written timeline in your proposal.
+- **Can you work with my existing brand?** Yes. Brand Transformation starts with an audit of what you already have. We keep what works, fix what doesn’t, and roll the result out across every channel.
+- **Is the dashboard on this website live?** The dashboard on the home page is a demo with sample data. Your own dashboard, after you sign up, shows real answers from ChatGPT, Gemini, Claude and Perplexity, checked automatically every week.
 - **What does Tawsiya do?** We build brands for small and medium businesses in the UAE and make them easy for AI assistants to understand, trust and recommend. That covers strategy, identity, website, content, a verified fact page, a WhatsApp assistant and a monthly score.
 - **Do you guarantee first place?** No. Nobody can honestly guarantee a ranking in AI answers, because the answers change from day to day and by how a question is asked. What we do guarantee is the method: we agree on a written set of test questions with you, run them the same way every month, and on the pay-on-results option you only pay the success fee if that agreed test is met within 90 days.
-- **How does the free AI Check work?** You tell us your business name, type and city. A person on our team asks 10 realistic customer questions in ChatGPT, Gemini, Claude, Google AI and Perplexity, reads every answer, and sends you a report with your logo: your Tawsiya Score, who got named instead, and three priority fixes, within 48 hours. No card needed.
-- **Is the check on this website live?** Not yet. The check on this page is an animated demo with sample numbers that shows what you’ll receive. Your real check is run by our team and delivered within 48 hours.
+- **How does the free AI Check work?** You enter your website, business name, what you do and your area. Our system checks your website against 15 published points and asks ChatGPT, Gemini, Claude and Perplexity real customer questions, with web search on. In a few minutes you get a private report: your Score, how often you were named, who was named instead, and what to fix first.
+- **Is the check on this website live?** Yes. The free Score on the Score page runs a real check. The animated preview on the home page uses sample numbers to show what a report looks like.
 - **What is a Tawsiya Score?** It’s the share of agreed test answers in which AI names your business, measured across five engines. Each question is asked several times, so one lucky or unlucky answer doesn’t swing the result.
 - **What is a verified fact page?** A clear page on your own site with the facts AI needs: what you offer, where you are, opening hours, price ranges, languages and how to book. It’s backed by structured data and kept consistent with your listings elsewhere.
 - **Do you work in Arabic and English?** Yes. We are Arabic-first: right-to-left design, natural Arabic that suits Gulf customers, and English that’s equally polished. Most of our work is delivered in both.
