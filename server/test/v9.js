@@ -85,8 +85,8 @@ const visit = (path, h) => fetch(BASE + path, { headers: Object.assign({ 'User-A
   r = await anon.req('GET', '/admin/'); ok(/id="adm-nav"/.test(r.text) && /admin9\.js/.test(r.text) && !/class="site-footer"/.test(r.text), 'admin page has its own shell, no site footer');
 
   console.log('link previews');
-  r = await anon.req('GET', '/en/'); ok(/og:image" content="[^"]*og-en\.png\?v=2"/.test(r.text), 'home page preview picture (English)');
-  const png = await fetch(BASE + '/assets/img/og-ar.png?v=2'); const pb = Buffer.from(await png.arrayBuffer());
+  r = await anon.req('GET', '/en/'); ok(/og:image" content="[^"]*og-en\.png\?v=3"/.test(r.text), 'home page preview picture (English)');
+  const png = await fetch(BASE + '/assets/img/og-ar.png?v=3'); const pb = Buffer.from(await png.arrayBuffer());
   ok(png.status === 200 && pb.slice(1, 4).toString() === 'PNG' && pb.length < 300 * 1024, 'home preview picture is a PNG under 300 KB (' + (pb.length / 1024 | 0) + ' KB)');
   const pr = (await admin.req('GET', '/api/admin/scans')).json.items.find((x) => x.site === 'pi.test' && x.token && x.status === 'done');
   if (pr) {

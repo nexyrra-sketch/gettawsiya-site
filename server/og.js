@@ -93,30 +93,35 @@ function reportSvg({ lang, name, score, named, total, measured, rival }) {
 function homeSvg(lang) {
   const ar = lang !== 'en';
   const T = ar
-    ? { h1: 'هل يوصي ChatGPT', h2: 'بنشاطك؟', sub: 'افحص نشاطك مجاناً في دقيقتين', cta: 'احصل على تقريرك المجاني', q: 'أفضل عيادة أسنان في جميرا؟', a: ['عيادة (أ)', 'عيادة (ب)', 'عيادة (ج)'], you: 'نشاطك؟', ai: 'ChatGPT' }
-    : { h1: 'Is ChatGPT recommending', h2: 'your business?', sub: 'Free AI visibility check in 2 minutes', cta: 'Get your free report', q: 'Best dentist in JLT?', a: ['Clinic A', 'Clinic B', 'Clinic C'], you: 'Your clinic?', ai: 'ChatGPT' };
+    ? { sub: 'افحص مجاناً: ماذا يقول الذكاء الاصطناعي عنك؟', cta: 'احصل على تقريرك المجاني', q: 'أفضل عيادة أسنان في جميرا؟', a: ['عيادتك', 'عيادة (ب)', 'عيادة (ج)'], badge: 'عملاء جدد', ai: 'ChatGPT' }
+    : { sub: 'Free check: see what ChatGPT says about you', cta: 'Get my free report', q: 'Best dentist in JLT?', a: ['Your clinic', 'Clinic B', 'Clinic C'], badge: 'New clients', ai: 'ChatGPT' };
   const x = ar ? 1130 : 70, anchor = ar ? 'end' : 'start';
   const cardX = ar ? 70 : 720, cardW = 410;
-  const rows = T.a.map((t, i) => `<g><circle cx="${cardX + 52}" cy="${312 + i * 58}" r="17" fill="#FFFFFF" fill-opacity="0.10"/><text x="${cardX + 52}" y="${321 + i * 58}" text-anchor="middle" font-family="${BOLD}" font-size="20" fill="${CREAM}">${i + 1}</text>
-    <text x="${ar ? cardX + cardW - 40 : cardX + 86}" y="${321 + i * 58}" text-anchor="${ar ? 'end' : 'start'}" font-family="${BODY}" font-size="27" fill="#DCD3C0">${esc(t)}</text></g>`).join('');
-  const youY = 312 + 3 * 58;
+  const rows = T.a.map((t, i) => {
+    const me = i === 0, y = 312 + i * 58;
+    return (me ? `<rect x="${cardX + 24}" y="${y - 30}" width="${cardW - 48}" height="52" rx="14" fill="#3DBB7E" fill-opacity="0.16" stroke="#3DBB7E" stroke-width="2"/>` : '') +
+    `<circle cx="${cardX + 52}" cy="${y}" r="17" fill="${me ? '#3DBB7E' : '#FFFFFF'}" fill-opacity="${me ? 1 : 0.10}"/><text x="${cardX + 52}" y="${y + 8}" text-anchor="middle" font-family="${BOLD}" font-size="20" fill="${me ? '#0D1210' : CREAM}">${i + 1}</text>
+    <text x="${ar ? cardX + cardW - 40 : cardX + 86}" y="${y + 9}" text-anchor="${ar ? 'end' : 'start'}" font-family="${me ? BOLD : BODY}" font-size="27" fill="${me ? '#7FE0AE' : '#9A917F'}">${esc(t)}</text>`;
+  }).join('');
+  const bx = ar ? cardX + 40 : cardX + cardW - 40;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">${defs}${brandRow(ar)}
   ${ar
-    ? `<text x="${x}" y="212" text-anchor="end" font-family="${BOLD}" font-size="66" fill="${CREAM}">هل يوصي</text>
-  <text x="${x}" y="286" text-anchor="end" font-family="${BOLD}" font-size="66" fill="${CREAM}">ChatGPT</text>
-  <text x="${x}" y="360" text-anchor="end" font-family="${BOLD}" font-size="66" fill="${BRASS}">بنشاطك؟</text>
-  <text x="${x}" y="418" text-anchor="end" font-family="${BODY}" font-size="29" fill="#CFC6B3">${esc(T.sub)}</text>`
-    : `<text x="${x}" y="232" text-anchor="start" font-family="${BOLD}" font-size="50" fill="${CREAM}">${esc(T.h1)}</text>
-  <text x="${x}" y="300" text-anchor="start" font-family="${BOLD}" font-size="50" fill="${BRASS}">${esc(T.h2)}</text>
-  <text x="${x}" y="362" text-anchor="start" font-family="${BODY}" font-size="30" fill="#CFC6B3">${esc(T.sub)}</text>`}
-  ${pill(ar, T.cta, ar ? 456 : 438)}
+    ? `<text x="${x}" y="206" text-anchor="end" font-family="${BOLD}" font-size="62" fill="${CREAM}">خلّ الذكاء الاصطناعي</text>
+  <text x="${x}" y="282" text-anchor="end" font-family="${BOLD}" font-size="62" fill="${BRASS}">يوصي بك</text>
+  <text x="${x}" y="352" text-anchor="end" font-family="${BOLD}" font-size="46" fill="${CREAM}">واحصل على عملاء أكثر</text>
+  <text x="${x}" y="412" text-anchor="end" font-family="${BODY}" font-size="27" fill="#CFC6B3">${esc(T.sub)}</text>`
+    : `<text x="${x}" y="214" text-anchor="start" font-family="${BOLD}" font-size="66" fill="${CREAM}">Let AI</text>
+  <text x="${x}" y="286" text-anchor="start" font-family="${BOLD}" font-size="66" fill="${BRASS}">recommend you.</text>
+  <text x="${x}" y="350" text-anchor="start" font-family="${BOLD}" font-size="46" fill="${CREAM}">Get more clients.</text>
+  <text x="${x}" y="406" text-anchor="start" font-family="${BODY}" font-size="27" fill="#CFC6B3">${esc(T.sub)}</text>`}
+  ${pill(ar, T.cta, ar ? 456 : 440)}
   <g><rect x="${cardX}" y="150" width="${cardW}" height="400" rx="28" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.14"/>
   <rect x="${ar ? cardX + 40 : cardX + 70}" y="176" width="${cardW - 110}" height="52" rx="26" fill="#FFFFFF" fill-opacity="0.12"/>
   <text x="${ar ? cardX + cardW - 64 : cardX + 96}" y="211" text-anchor="${ar ? 'end' : 'start'}" font-family="${BODY}" font-size="23" fill="${CREAM}">${esc(T.q)}</text>
   <text x="${ar ? cardX + cardW - 40 : cardX + 40}" y="262" text-anchor="${ar ? 'end' : 'start'}" font-family="${BOLD}" font-size="18" letter-spacing="${ar ? 0 : 2}" fill="${BRASS}">${esc(T.ai)}</text>
   ${rows}
-  <rect x="${cardX + 28}" y="${youY - 28}" width="${cardW - 56}" height="52" rx="14" fill="none" stroke="#EE6B58" stroke-width="2.5" stroke-dasharray="9 8"/>
-  <text x="${cardX + cardW / 2}" y="${youY + 8}" text-anchor="middle" font-family="${BOLD}" font-size="26" fill="#EE6B58">${esc(T.you)}</text></g>
+  <rect x="${cardX + 70}" y="${312 + 3 * 58 - 12}" width="${cardW - 140}" height="46" rx="23" fill="#3DBB7E"/>
+  <text x="${cardX + cardW / 2}" y="${312 + 3 * 58 + 20}" text-anchor="middle" font-family="${BOLD}" font-size="24" fill="#0D1210">${ar ? '' : '+ '}${esc(T.badge)}</text></g>
   <text x="${ar ? 1130 : 70}" y="596" text-anchor="${anchor}" font-family="${BODY}" font-size="22" fill="#7C7567">gettawsiya.com</text></svg>`;
 }
 
