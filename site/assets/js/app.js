@@ -396,13 +396,21 @@
   }
 
   /* ---------- Gentle reveal on scroll ---------- */
+  /* Every .rv block (static in the HTML or added here) must end up visible:
+     fade in on scroll when we can, otherwise show at once. */
+  var allRv = function () { return $$(".rv"); };
+  var showAll = function () { allRv().forEach(function (el) { el.classList.add("in"); }); };
   if ("IntersectionObserver" in window && !rm()) {
-    var revealEls = $$(".v4-head, .st, .wc, .ck, .da-box, .ch-box, .ft, .pf-grid li, .pc, .wk, .pj-fig, .pj-3 > div");
-    revealEls.forEach(function (el) { el.classList.add("rv"); });
+    $$(".v4-head, .st, .wc, .ck, .da-box, .ch-box, .ft, .pf-grid li, .pc, .wk, .pj-fig, .pj-3 > div").forEach(function (el) { el.classList.add("rv"); });
     var ro = new IntersectionObserver(function (es) {
       es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); ro.unobserve(en.target); } });
     }, { rootMargin: "0px 0px -8% 0px" });
-    revealEls.forEach(function (el) { ro.observe(el); });
+    allRv().forEach(function (el) { ro.observe(el); });
+    /* jumping to #pricing etc. or printing must never leave a block hidden */
+    window.addEventListener("beforeprint", showAll);
+    window.addEventListener("hashchange", function () { setTimeout(showAll, 50); });
+  } else {
+    showAll();
   }
 
   /* ---------- v4: website check boxes -> the Score page, with the site filled in ---------- */

@@ -1,50 +1,32 @@
 # Tawsiya (توصية)
 
-> Tawsiya is a Dubai-based brand studio and AI visibility company. It builds distinctive brands for UAE businesses, engineers their digital presence, makes them discoverable and recommendable by AI assistants (ChatGPT, Gemini, Claude, Perplexity, Google AI), and builds growth systems such as WhatsApp assistants and lead generation. "Tawsiya" means "recommendation" in Arabic. Arabic-first, fully bilingual (Arabic and English).
+> Tawsiya is a Dubai-based AI visibility service for UAE businesses. It checks what ChatGPT, Gemini, Claude and Perplexity say when customers ask for a business like yours, fixes what stops them from naming the business (website, Google profile, listings, reviews and business facts), and re-checks every week so progress is measured. "Tawsiya" means "recommendation" in Arabic. Arabic-first, fully bilingual (Arabic and English).
 
 - Website (Arabic): https://gettawsiya.com/
 - Website (English): https://gettawsiya.com/en/
+- Free report: https://gettawsiya.com/en/score/
 - Email: hello@gettawsiya.com
 - WhatsApp: +971507901022
 - Location: Dubai, United Arab Emirates
 
-## Capabilities
-1. Brand creation and development: business concept and positioning, naming, logo and visual identity, brand strategy and guidelines, websites, e-commerce, marketing strategy, social media identity, launch campaigns, storytelling.
-2. AI visibility and recommendations: AI recommendation audits across ChatGPT, Gemini, Claude, Perplexity and Google AI, competitor visibility analysis, AI search optimisation, structured business information, authority and content development, continuous monitoring with a monthly Tawsiya Score.
-3. Business growth and AI automation: AI customer assistants, WhatsApp automation, lead generation, customer acquisition, conversion optimisation, content systems, business intelligence, digital transformation.
+## Plans (AED, paid one month at a time through Ziina, never renew automatically)
+- Free report: free. See where you stand with AI today. Includes: Full AI visibility report with a score out of 100; What the major AI assistants say about you; Who AI recommends instead of you; An action plan you can start today.
+- Track: AED 199 per month. You do the fixes. We measure every week. Includes: Everything in the free report; Automatic re-scan every week; 10 customer questions in Arabic and English; Track 3 competitors; Step-by-step action plan you do yourself; Before and after report to share.
+- Grow: AED 799 per month. We do the fixes for you. Includes: Everything in Track; We do the fixes for you; 20 customer questions in Arabic and English; Track 10 competitors; Extra scan any time (2 a week); Monthly progress review on WhatsApp.
+Current plans and prices are always at https://gettawsiya.com/en/plans/. Branding, websites and other custom work are quoted in writing on request.
 
-## Brand process (6 stages)
-Discover, Strategize, Create, Build, Launch, Grow.
-
-## Packages (AED, excluding 5% VAT) Indicative; confirmed in each written proposal.
-- Free Tawsiya Score: automatic 15-point website check plus real customer questions asked to ChatGPT, Gemini, Claude and Perplexity; private report in minutes.
-- Paid plans (AED, prepaid monthly through Ziina, no automatic renewal): weekly automatic checks, competitor tracking and a fix list. Current plans: https://gettawsiya.com/en/plans/
-- Brand Launch: from 15,000.
-- Brand Transformation: from 25,000.
-- AI Visibility: 199 setup (7-day fix), then 3,500 per month; pay-on-results option.
-- Growth Systems: from 4,500 per month.
-- Complete Business Transformation: from 60,000.
+## How it works
+1. Check: real customer questions, in Arabic and English, are asked to the AI assistants, and every answer is recorded.
+2. Fix: a plain-language action plan; on the Grow plan the Tawsiya team does the fixes.
+3. Re-check: the same questions are asked again every week, giving a before and after.
 
 ## Standards and tools
-- Tawsiya Score: a public 15-point checklist of what makes a UAE business easy for AI assistants to find and describe correctly, plus the share of AI answers that name the business. Free request, checked by a person: https://gettawsiya.com/en/score/
+- Tawsiya Score: a public checklist of what makes a UAE business easy for AI assistants to find and describe correctly, plus the share of AI answers that name the business: https://gettawsiya.com/en/score/
 - Method (how the Score is calculated): https://gettawsiya.com/en/method/
 - UAE AI Visibility Index: published editions by sector, real checks only, with the method shown: https://gettawsiya.com/en/ai-index/
-- Tawsiya Verified: public pages with a business's checked facts (name, area, hours, contact, services) in JSON-LD, plus a badge and a JSON file: https://gettawsiya.com/en/verified/
+- Tawsiya Verified: public pages with a business's checked facts in JSON-LD: https://gettawsiya.com/en/verified/
 - Partner programme for accountants, agencies, consultants and PRO firms: https://gettawsiya.com/en/partners/
 - Guides: https://gettawsiya.com/en/guides/
-
-## Portfolio
-The portfolio contains ten fictional brand concepts created by the Tawsiya studio to demonstrate its process. They are not clients.
-- AURELLE (Luxury skincare): https://gettawsiya.com/en/work/aurelle/
-- mondri (Specialty coffee): https://gettawsiya.com/en/work/mondri/
-- NUVORA (Modern property): https://gettawsiya.com/en/work/nuvora/
-- VELORA (Lifestyle and home): https://gettawsiya.com/en/work/velora/
-- Atelier Nōr (Luxury fashion and accessories): https://gettawsiya.com/en/work/atelier-nor/
-- Kinza (Food and hospitality): https://gettawsiya.com/en/work/kinza/
-- NOVENTRA (Technology and business solutions): https://gettawsiya.com/en/work/noventra/
-- VITALORA (Fitness and wellness): https://gettawsiya.com/en/work/vitalora/
-- FORMA (Architecture and interior design): https://gettawsiya.com/en/work/forma/
-- solvéa (Modern personal care): https://gettawsiya.com/en/work/solvea/
 
 ## Sector pages
 - Clinics: https://gettawsiya.com/en/clinics/ (Arabic: https://gettawsiya.com/clinics/)
@@ -54,22 +36,16 @@ The portfolio contains ten fictional brand concepts created by the Tawsiya studi
 - Professional services: https://gettawsiya.com/en/professional-services/ (Arabic: https://gettawsiya.com/professional-services/)
 
 ## What Tawsiya does not claim
-Tawsiya does not guarantee rankings or first place in AI answers. AI answers change; success is measured on an agreed written test.
-The animated dashboard and check on the home page are demos with sample data; the free Score and client dashboards use real checks.
+Tawsiya does not guarantee rankings or first place in AI answers. Each assistant decides on its own and answers change over time; progress is shown by asking the same questions every week.
+Example figures and business names on the home page are illustrations; the free report and client dashboards use real checks.
 
 ## FAQ
-- **Do you build brands from zero?** Yes. Brand creation is half of what we do: positioning, naming, logo and identity, guidelines, website, e-commerce, social media identity and launch campaigns. Then we make the brand visible to AI assistants and build the systems that bring customers.
-- **Are the brands in your portfolio real clients?** No. The ten brands in our portfolio are original concepts created by our studio to show how we work, and every project page says so. As clients give permission, their real projects will be added and clearly marked.
-- **How long does a new brand take?** A Brand Launch usually takes 6 to 10 weeks from the first workshop to launch, depending on the website and how quickly decisions are made. You get a written timeline in your proposal.
-- **Can you work with my existing brand?** Yes. Brand Transformation starts with an audit of what you already have. We keep what works, fix what doesn’t, and roll the result out across every channel.
-- **Is the dashboard on this website live?** The dashboard on the home page is a demo with sample data. Your own dashboard, after you sign up, shows real answers from ChatGPT, Gemini, Claude and Perplexity, checked automatically every week.
-- **What does Tawsiya do?** We build brands for small and medium businesses in the UAE and make them easy for AI assistants to understand, trust and recommend. That covers strategy, identity, website, content, a verified fact page, a WhatsApp assistant and a monthly score.
-- **Do you guarantee first place?** No. Nobody can honestly guarantee a ranking in AI answers, because the answers change from day to day and by how a question is asked. What we do guarantee is the method: we agree on a written set of test questions with you, run them the same way every month, and on the pay-on-results option you only pay the success fee if that agreed test is met within 90 days.
-- **How does the free AI Check work?** You enter your website, business name, what you do and your area. Our system checks your website against 15 published points and asks ChatGPT, Gemini, Claude and Perplexity real customer questions, with web search on. In a few minutes you get a private report: your Score, how often you were named, who was named instead, and what to fix first.
-- **Is the check on this website live?** Yes. The free Score on the Score page runs a real check. The animated preview on the home page uses sample numbers to show what a report looks like.
-- **What is a Tawsiya Score?** It’s the share of agreed test answers in which AI names your business, measured across five engines. Each question is asked several times, so one lucky or unlucky answer doesn’t swing the result.
-- **What is a verified fact page?** A clear page on your own site with the facts AI needs: what you offer, where you are, opening hours, price ranges, languages and how to book. It’s backed by structured data and kept consistent with your listings elsewhere.
-- **Do you work in Arabic and English?** Yes. We are Arabic-first: right-to-left design, natural Arabic that suits Gulf customers, and English that’s equally polished. Most of our work is delivered in both.
-- **What does the WhatsApp assistant do?** It answers common questions and books appointments in Arabic and English, using your real availability and rules. Anything sensitive or unusual is handed to your team. It runs on the WhatsApp Business Platform.
-- **How long until results?** The foundation is usually in place within the first week or two. AI assistants then take time to pick up changes, so we measure over 90 days and report monthly.
-- **Which businesses do you work with?** We’re starting with clinics, restaurants and cafés, real estate, salons and professional services in Dubai, then across the UAE.
+- **What does Tawsiya do?** We check what ChatGPT, Gemini, Claude and Perplexity say when your customers ask for a business like yours. Then we fix what stops them from naming you: your website, Google profile, listings, reviews and business facts. Every week we ask again, so you can see what changed.
+- **Is the free report really free?** Yes. No card and no account. Paste your website and in a few minutes you get your score out of 100, the real answers, the competitors named instead of you, and a list of fixes.
+- **Do you guarantee AI will recommend me?** No, and nobody honest can. Each assistant decides on its own and answers change over time. What we stand behind is the work: clear fixes, done or explained, and the same questions asked again every week so progress is measured, not guessed.
+- **How soon will I see a difference?** Website and profile fixes can show within a few weeks. Listings and reviews usually take one to three months. Your weekly scan shows each change as it happens.
+- **What is the difference between Track and Grow?** Track (AED 199 a month) measures you every week and gives you a step-by-step plan you carry out yourself. Grow (AED 799 a month) is done for you: our team makes the fixes, tracks more questions and competitors, and reviews progress with you on WhatsApp every month.
+- **Will I be charged automatically?** No. Plans are paid one month at a time through Ziina and never renew by themselves. We remind you 7 days and 1 day before your month ends, and you decide whether to continue.
+- **Do you work in Arabic and English?** Yes. We ask AI the way your customers do, in Arabic and in English, and your report and dashboard work in both languages.
+- **Which businesses is it for?** Any UAE business that customers look for: clinics, restaurants and cafés, real estate, salons and spas, and professional services. If people ask AI for the best place like yours in Dubai, it is for you.
+- **What happens to my data?** We read only your public website and public listings. Your report is a private link, and we never sell or share your data.

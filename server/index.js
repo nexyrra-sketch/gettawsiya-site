@@ -67,7 +67,7 @@ function createApp() {
     setHeaders(res, file) {
       if (/\/assets\/fonts\//.test(file)) res.set('Cache-Control', 'public, max-age=31536000, immutable');
       else if (/\/assets\/img\//.test(file)) res.set('Cache-Control', 'public, max-age=2592000');
-      else if (/\/assets\/(css|js)\//.test(file)) res.set('Cache-Control', 'public, max-age=3600');
+      else if (/\/assets\/(css|js)\//.test(file)) res.set('Cache-Control', 'no-cache');
       else if (/\.html$/.test(file)) res.set('Cache-Control', 'no-cache');
     }
   }));
