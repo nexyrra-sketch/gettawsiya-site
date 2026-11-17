@@ -45,8 +45,9 @@ router.post('/api/score-requests', U.limit('score', 8, 3600e3), wrap(async (req,
   if (contact && !contactOk(contact)) U.fail(400, 'contact');
   const ref = await validRef(req.cookies && req.cookies.tw_ref);
   const token = U.token(18);
-  const r = await q(`INSERT INTO score_requests(token,site,name,contact,business_id,user_id,ref_code,lang,source,biz_name,category,area,city) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id`,
-    [token, site, name, contact || null, businessId, userId, ref, b.lang === 'en' ? 'en' : 'ar', U.optStr(b.source, 30), U.optStr(b.biz_name, 120), U.optStr(b.category, 80), U.optStr(b.area, 80), U.optStr(b.city, 60) || 'Dubai']);
+  const from = require('./traffic').reportSource(b, req);
+  const r = await q(`INSERT INTO score_requests(token,site,name,contact,business_id,user_id,ref_code,lang,source,biz_name,category,area,city,src,campaign) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING id`,
+    [token, site, name, contact || null, businessId, userId, ref, b.lang === 'en' ? 'en' : 'ar', U.optStr(b.source, 30), U.optStr(b.biz_name, 120), U.optStr(b.category, 80), U.optStr(b.area, 80), U.optStr(b.city, 60) || 'Dubai', from.src, from.campaign]);
   const auto = C.worker();
   await W.enqueue('score', { request_id: r.rows[0].id });
   res.json({ id: r.rows[0].id, token, auto });

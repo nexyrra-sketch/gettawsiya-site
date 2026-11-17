@@ -10,7 +10,7 @@
   var LEAD = [["new", "New"], ["contacted", "Contacted"], ["talking", "Talking"], ["won", "Won"], ["lost", "Lost"]];
   var poll = null;
 
-  A.TABS.splice(1, 0, ["scans", "Scans"], ["clients", "Clients"], ["money", "Money"]);
+  A.TABS.splice(1, 0, ["scans", "Scans"], ["clients", "Clients"], ["money", "Money"], ["traffic", "Traffic"]);
   A.TABS.forEach(function (t) { if (t[0] === "requests") t[1] = "Score requests (old)"; });
 
   function scoreBadge(n, g) {
@@ -27,8 +27,8 @@
   function msgFor(x, url) {
     var name = x.business_name || x.site;
     return x.lang === "en"
-      ? "Hi, this is Hassan from Tawsiya. We checked how AI assistants (ChatGPT, Gemini, Claude, Perplexity) see " + name + ". Your score is " + (x.overall == null ? "ready" : x.overall + "/100") + ". Full report: " + url
-      : "مرحباً، معك حسان من توصية. فحصنا كيف ترى مساعدات الذكاء الاصطناعي (ChatGPT وGemini وClaude وPerplexity) نشاط " + name + ". درجتكم " + (x.overall == null ? "جاهزة" : x.overall + "/100") + ". التقرير الكامل: " + url;
+      ? "Hi, this is Hassan from Tawsiya. We checked what AI assistants say about " + name + ". Your score is " + (x.overall == null ? "ready" : x.overall + "/100") + ". Full report: " + url
+      : "مرحباً، معك حسان من توصية. فحصنا ماذا تقول مساعدات الذكاء الاصطناعي عن " + name + ". درجتكم " + (x.overall == null ? "جاهزة" : x.overall + "/100") + ". التقرير الكامل: " + url;
   }
   function copy(text, b) { if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { var w = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = w; }, 1500); }); else window.prompt("", text); }
   function link(label, href, cls) { return h("a", { class: "v4-btn v4-btn-sm " + (cls || "v4-btn-line"), href: href, target: "_blank", rel: "noopener" }, label); }
@@ -73,6 +73,55 @@
         sec("Cost controls", [h("div", { class: "tw-form3" }, fFree, fBud, fFix),
           h("h3", null, "AI models"), h("p", { class: "ap-fine" }, "Leave empty to use the default. If a model is retired, Tawsiya tries the next one by itself: " + m.models.map(function (x) { return x.label + " is using " + x.in_use; }).join(", ") + "."),
           h("div", { class: "tw-form3" }, mf.map(function (x) { return x[1]; })), h("div", { class: "ap-row" }, save), out])));
+    });
+  };
+
+  /* ------------------------------------------------------------ Traffic */
+  var tDays = 30;
+  var NICE = { direct: "Direct / typed", unknown: "Unknown", google: "Google", instagram: "Instagram", facebook: "Facebook", tiktok: "TikTok", x: "X (Twitter)", linkedin: "LinkedIn",
+    whatsapp: "WhatsApp", youtube: "YouTube", snapchat: "Snapchat", chatgpt: "ChatGPT", perplexity: "Perplexity", gemini: "Gemini", claude: "Claude", copilot: "Copilot", bing: "Bing" };
+  function srcName(s) { return NICE[s] || s || "Unknown"; }
+  function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 + "%" : "–"; }
+  A.VIEWS.traffic = function () {
+    stop();
+    return api("GET", "/traffic?days=" + tDays).then(function (t) {
+      var periods = h("div", { class: "tw-filters" }, [7, 30, 90].map(function (d) {
+        return h("button", { type: "button", class: "ap-tab" + (tDays === d ? " on" : ""), onclick: function () { tDays = d; A.VIEWS.traffic(); } }, "Last " + d + " days");
+      }));
+      /* tracked link maker: one link per post, so the stats show which post brought visitors and reports */
+      var where = F("Where you will post it", { name: "src", options: [["instagram", "Instagram"], ["tiktok", "TikTok"], ["whatsapp", "WhatsApp"], ["linkedin", "LinkedIn"], ["x", "X (Twitter)"], ["youtube", "YouTube"], ["snapchat", "Snapchat"], ["email", "Email"], ["partner", "Partner"]] }),
+        what = F("Name of the post (short)", { name: "camp", ph: "dentist-jlt-video", dir: "ltr" }),
+        page = F("Page", { name: "page", options: [["/", "Home (Arabic)"], ["/en/", "Home (English)"], ["/score/", "Free report (Arabic)"], ["/en/score/", "Free report (English)"]] });
+      var linkOut = h("code", { class: "tw-link", dir: "ltr" }, ""), copyB = h("button", { type: "button", class: "v4-btn v4-btn-sm v4-btn-line" }, "Copy link");
+      function makeLink() {
+        var c = (what.input.value || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        var u = ORIGIN + page.input.value + "?utm_source=" + where.input.value + (c ? "&utm_campaign=" + c : "");
+        linkOut.textContent = u; return u;
+      }
+      [where, what, page].forEach(function (f) { f.input.addEventListener("input", makeLink); f.input.addEventListener("change", makeLink); });
+      copyB.addEventListener("click", function () { copy(makeLink(), copyB); });
+      makeLink();
+      var bookF = F("Booking link (Cal.com or Calendly, starts with https://)", { name: "booking_url", value: t.booking_url || "", ph: "https://cal.com/your-name/15min", dir: "ltr" }), bookOut = h("p", { class: "ap-fine", role: "status" });
+      var bookSave = btn("Save booking link", function () {
+        return api("PUT", "/settings", { booking_url: bookF.input.value.trim() }).then(function () { bookOut.textContent = bookF.input.value.trim() ? "Saved. The \"Book a free 15-minute call\" button now shows on reports and the home page." : "Removed. The booking buttons are hidden."; },
+          function (er) { bookOut.textContent = er && er.code === "bad_booking_url" ? "That link must start with https://" : E(er); });
+      }, "v4-btn-dark");
+      TW.mount(body(), h("div", { class: "tw-ws" },
+        sec("Visitors", [periods,
+          h("div", { class: "ap-stats" }, stat("Visitors", String(t.visitors), "people, counted once a day"), stat("Page views", String(t.views)),
+            stat("Free reports", String(t.reports), pct(t.reports, t.visitors) + " of visitors"), stat("Reports with contact", String(t.with_contact), "people you can follow up"),
+            stat("New accounts", String(t.signups)), stat("Payments", String(t.payments)), stat("Sent by AI assistants", String(t.ai_visitors), "ChatGPT, Perplexity, Gemini…", t.ai_visitors ? "tw-pos" : "")),
+          h("p", { class: "ap-fine" }, "Counted on your own server: no cookies, no Google tracking, and bots are left out. Your own admin pages are not counted.")]),
+        sec("Where they come from", [t.sources.length ? table([["Source", function (s) { return h("b", null, srcName(s.src)); }], ["Visitors", function (s) { return String(s.visitors); }], ["Views", function (s) { return String(s.views); }],
+          ["Free reports", function (s) { return String(s.reports); }], ["Turned into a report", function (s) { return pct(s.reports, s.visitors); }]], t.sources) : h("p", { class: "ap-fine" }, "No visitors yet. Share your tracked links below.")]),
+        sec("Your posts and campaigns", [t.campaigns.length ? table([["Post", function (c) { return h("b", { dir: "ltr" }, c.campaign); }], ["Posted on", function (c) { return srcName(c.src); }], ["Visitors", function (c) { return String(c.visitors); }], ["Free reports", function (c) { return String(c.reports); }]], t.campaigns)
+          : h("p", { class: "ap-fine" }, "When you share a tracked link (made below), each post shows here with the visitors and reports it brought.")]),
+        sec("Make a tracked link for a post", [h("p", { class: "ap-fine" }, "Use a different link for every post, story or message. Then this page shows which one brings people and reports."),
+          h("div", { class: "tw-form3" }, where, what, page), h("div", { class: "ap-row" }, linkOut, copyB)]),
+        sec("Day by day", [table([["Day", function (d) { return d.d; }], ["Visitors", function (d) { return String(d.visitors); }], ["Views", function (d) { return String(d.views); }], ["Free reports", function (d) { return String(d.reports); }]], t.daily)]),
+        sec("Most viewed pages", [t.pages.length ? table([["Page", function (p) { return h("a", { href: p.path, target: "_blank", rel: "noopener", dir: "ltr" }, p.path); }], ["Views", function (p) { return String(p.views); }], ["Visitors", function (p) { return String(p.visitors); }]], t.pages) : h("p", { class: "ap-fine" }, "No page views yet.")]),
+        sec("Booking link", [h("p", { class: "ap-fine" }, "Make a free 15-minute event on Cal.com or Calendly and paste its link here. A \"Book a free 15-minute call\" button then appears on every report and on the home page. Leave it empty to hide the button."),
+          bookF, h("div", { class: "ap-row" }, bookSave), bookOut])));
     });
   };
 

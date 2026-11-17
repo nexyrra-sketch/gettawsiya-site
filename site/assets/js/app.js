@@ -14,6 +14,25 @@
   function $(s, c) { return (c || doc).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, rm() ? 0 : ms); }); }
+
+  /* Where this visit started (kept in this browser tab only, no cookie): sent with a free report request
+     so the admin Traffic tab can show which posts and sites bring reports. */
+  try {
+    if (!sessionStorage.getItem("tw_from")) {
+      var qs = new URLSearchParams(location.search), rh = "";
+      try { rh = doc.referrer ? new URL(doc.referrer).host : ""; } catch (e) {}
+      sessionStorage.setItem("tw_from", JSON.stringify({ utm_source: qs.get("utm_source") || "", utm_campaign: qs.get("utm_campaign") || "", ref: rh === location.host ? "" : rh }));
+    }
+  } catch (e) {}
+
+  /* "Book a 15-minute call" buttons stay hidden until the admin sets a booking link */
+  var bookEls = $$("[data-booking]");
+  if (bookEls.length && window.fetch) {
+    fetch("/api/site-config", { credentials: "same-origin" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.booking_url) return;
+      bookEls.forEach(function (a) { a.href = j.booking_url; a.target = "_blank"; a.rel = "noopener"; a.hidden = false; });
+    }).catch(function () {});
+  }
   function fill(str, map) { return str.replace(/\{(\w+)\}/g, function (_, k) { return map[k] != null ? map[k] : ""; }); }
 
   /* ---------- Contact links: one place decides WhatsApp vs email ---------- */

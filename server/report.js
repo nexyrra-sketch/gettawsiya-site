@@ -36,6 +36,7 @@ function report({ run, answers, lang, name, site, token, canonical }) {
   const g = SC.GRADE[sc.grade];
   const url = `${R.CFG().domain}${prefix(lang)}/report/${token}/`;
   const wa = R.waHref(R.fill(T.cta_msg, { site: site || name, score: sc.overall }));
+  const book = require('./settings').get('booking_url') || '';
 
   const kpi = (big, small, label, t) => `<div class="rp-kpi rp-t-${t}"><b>${big}</b>${small ? `<span>${small}</span>` : ''}<p>${esc(label)}</p></div>`;
   const kpis = `<section class="rp-kpis" aria-label="${esc(T.pillars_h)}">
@@ -115,7 +116,7 @@ function report({ run, answers, lang, name, site, token, canonical }) {
   ${plan}
   ${checks}
   ${profile}
-  <section class="rp-cta"><div><h2>${esc(T.cta_h)}</h2><p>${esc(T.cta_t)}</p></div><div class="rp-cta-b"><a class="v4-btn v4-btn-gold" href="${prefix(lang)}/plans/">${esc(T.cta_plans)}</a> <a class="v4-btn v4-btn-line" href="${esc(wa)}" rel="noopener">${esc(T.cta_wa)}</a></div></section>
+  <section class="rp-cta"><div><h2>${esc(T.cta_h)}</h2><p>${esc(T.cta_t)}</p></div><div class="rp-cta-b"><a class="v4-btn v4-btn-gold" href="${prefix(lang)}/plans/">${esc(T.cta_plans)}</a> <a class="v4-btn v4-btn-line" href="${esc(wa)}" rel="noopener">${esc(T.cta_wa)}</a>${book ? ` <a class="v4-btn v4-btn-line" href="${esc(book)}" target="_blank" rel="noopener">${esc(T.cta_book)}</a>` : ''}</div></section>
   <p class="ap-fine">${esc(T.method)} <a href="${prefix(lang)}/method/">${esc(T.method_link)}</a></p>
 </article>`;
 }

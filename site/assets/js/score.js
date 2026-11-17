@@ -46,7 +46,7 @@
     if (c && !(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c) || /^\+?[\d\s()-]{7,20}$/.test(c))) { fail("contact"); ct.focus(); return; }
     if (!cb.checked) { fail("consent"); cb.focus(); return; }
     TW.busy(btn, true);
-    TW.api("POST", "/api/score-requests", { site: s, name: nm.value.trim(), contact: c, biz_name: biz.value.trim(), category: cat.value.trim(), area: area.value.trim(), lang: TW.lang, consent: true, source: "score-page" })
+    TW.api("POST", "/api/score-requests", { site: s, name: nm.value.trim(), contact: c, biz_name: biz.value.trim(), category: cat.value.trim(), area: area.value.trim(), lang: TW.lang, consent: true, source: "score-page", from: (function () { try { return JSON.parse(sessionStorage.getItem("tw_from") || "null") || undefined; } catch (e) { return undefined; } })() })
       .then(function (r) { if (r.auto) { location.href = TW.langPath("/report/" + r.token + "/"); return; } TW.busy(btn, false); showDone(r, s); },
         function (x) { TW.busy(btn, false); err.textContent = TW.errText(x); err.hidden = false; if (x.code === "site") fail("site"); if (x.code === "contact") fail("contact"); });
   });

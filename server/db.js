@@ -195,11 +195,19 @@ ALTER TABLE runs ADD COLUMN IF NOT EXISTS cost_usd NUMERIC(10,4) NOT NULL DEFAUL
 const PLAN_SQL = `INSERT INTO plans(key,name_en,name_ar,blurb_en,blurb_ar,price_fils,interval,features_en,features_ar,limits,featured,sort) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`;
 const planArgs = (p) => [p.key, p.name_en, p.name_ar, p.blurb_en, p.blurb_ar, p.price, p.interval, JSON.stringify(p.f_en), JSON.stringify(p.f_ar), p.limits, !!p.featured, p.sort];
 
+const SCHEMA5 = `
+CREATE TABLE IF NOT EXISTS visits (id BIGSERIAL PRIMARY KEY, at TIMESTAMPTZ NOT NULL DEFAULT now(), path TEXT NOT NULL, src TEXT, medium TEXT, campaign TEXT, lang TEXT, device TEXT, vid TEXT);
+CREATE INDEX IF NOT EXISTS visits_at ON visits(at);
+ALTER TABLE score_requests ADD COLUMN IF NOT EXISTS src TEXT;
+ALTER TABLE score_requests ADD COLUMN IF NOT EXISTS campaign TEXT;
+`;
+
 async function migrate() {
   await pool.query(SCHEMA);
   await pool.query(SCHEMA2);
   await pool.query(SCHEMA3);
   await pool.query(SCHEMA4);
+  await pool.query(SCHEMA5);
   /* plans: seed once; refresh the three standard plans to the v8 offer once (later admin edits are kept) */
   const n = (await pool.query('SELECT count(*)::int n FROM plans')).rows[0].n;
   const v8 = (await pool.query("SELECT 1 FROM settings WHERE key='_plans_v8'")).rows.length;

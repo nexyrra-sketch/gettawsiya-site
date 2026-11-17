@@ -11,6 +11,7 @@ const PAGES = require('./pages');
 const BILL = require('./billing');
 const W = require('./engine/worker');
 const V7 = require('./v7');
+const TR = require('./traffic');
 
 const PROD = process.env.NODE_ENV === 'production';
 
@@ -31,6 +32,9 @@ function createApp() {
     next();
   });
 
+  // visitor stats: counts page views after they are sent (no cookies, bots skipped)
+  app.use(TR.count());
+
   app.get('/healthz', async (req, res) => { try { await pool.query('SELECT 1'); res.json({ ok: true }); } catch (e) { res.status(503).json({ ok: false }); } });
 
   // Ziina webhook: raw body, HMAC-verified, and the payment is always re-read from Ziina (mounted before the JSON-only guard)
@@ -50,6 +54,8 @@ function createApp() {
   app.use(A.loadUser);
 
   app.use(V7.router);
+  app.use(TR.pub);
+  app.use('/api/admin', TR.admin);
   app.use('/api/admin', V7.admin);
   app.use('/api/auth', A.router);
   app.use('/api/client', API.client);
@@ -94,6 +100,7 @@ async function start() {
   R.load();
   await migrate();
   require('./settings').start(); await require('./settings').load();
+  await TR.ensureSalt();
   await A.ensureAdmin();
   const app = createApp();
   W.start();
