@@ -39,6 +39,14 @@ function page(opts) {
   };
   let html = shells[lang].replace(/@@(TITLE|DESC|SLUG|OTHER|CONTENT|EXTRA)@@/g, (m, k) => vals[k]);
   html = html.replace(/(href="https?:\/\/[^"\/]+(?:\/en)?\/)\/"/g, '$1"');
+  /* link preview: a page can bring its own picture (the report shows the business and its score) */
+  if (opts.ogImage) {
+    const img = esc(opts.ogImage), t = esc(opts.title), d = esc(opts.desc || '');
+    html = html.replace(/(<meta (?:property="og:image"|name="twitter:image") content=")[^"]*(")/g, `$1${img}$2`)
+      .replace(/(<meta (?:property="og:image:alt") content=")[^"]*(")/, `$1${t}$2`)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${t}$2`)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${d}$2`);
+  }
   if (opts.index === false) html = html.replace('content="index, follow, max-image-preview:large"', 'content="noindex, nofollow"');
   if (opts.ld) html = html.replace('</head>', `<script type="application/ld+json">${opts.ld}</script>\n</head>`);
   return html;

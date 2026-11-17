@@ -10,6 +10,9 @@ const C = require('./config');
 const W = require('./engine/worker');
 const SC = require('./engine/scan');
 const P = require('./report');
+const OG = require('./og');
+const fs = require('fs');
+const path = require('path');
 const { notFound } = require('./pages');
 
 const router = express.Router();
@@ -35,6 +38,35 @@ async function resolve(token) {
 const answersOf = async (runId) => (await q('SELECT assistant,question,lang,kind,named,answer,sources,mentions,error FROM run_answers WHERE run_id=$1 ORDER BY id', [runId])).rows;
 const extra = (lang) => `<script src="/assets/js/core.js" defer></script><script src="/assets/js/report.js" defer></script>`;
 
+/* ------------------------------------------------------------------ link previews */
+/* what WhatsApp & co. show next to a shared report link: the business, its score and who AI names instead */
+const baseUrl = () => C.publicUrl();
+const previewOf = (lang, name, sc) => {
+  const en = lang === 'en', measured = sc && sc.measured && sc.total > 0;
+  const score = Math.round(sc.overall);
+  return {
+    title: en ? `${name}: ${score}/100 on AI visibility` : `${name}: ${score}/100 في ظهور الذكاء الاصطناعي`,
+    desc: measured
+      ? (en ? `AI assistants named ${name} in ${sc.named} of ${sc.total} answers. See who they recommend instead and how to fix it.` : `ذكرت مساعدات الذكاء الاصطناعي ${name} في ${sc.named} من ${sc.total} إجابة. شاهد من توصي به بدلاً منه وكيف تصلح ذلك.`)
+      : (en ? `See what AI assistants say about ${name} and what to fix first.` : `شاهد ماذا تقول مساعدات الذكاء الاصطناعي عن ${name} وما الذي يجب إصلاحه أولاً.`),
+    image: `${baseUrl()}/og/report/${'__T__'}.png?l=${en ? 'en' : 'ar'}`
+  };
+};
+const STATIC_OG = (lang) => path.join(R.SITE_DIR, 'assets', 'img', `og-${lang}.png`);
+router.get(/^\/og\/report\/([A-Za-z0-9_-]{16,64})\.png$/, U.limit('og', 120, 60e3), wrap(async (req, res) => {
+  const lang = req.query.l === 'en' ? 'en' : 'ar';
+  const fallback = () => res.set('Cache-Control', 'public, max-age=300').type('png').sendFile(STATIC_OG(lang));
+  try {
+    if (!OG.available()) return fallback();
+    const x = await resolve(req.params[0]);
+    if (!x || !x.run || x.run.status !== 'done' || !x.run.scan) return fallback();
+    const sc = x.run.scan, p = x.run.profile || {};
+    const name = x.run.business_name || (lang === 'ar' ? p.name_ar || p.name : p.name) || x.run.site || (x.rq && x.rq.site) || '';
+    const buf = OG.reportPng({ lang, name, score: sc.overall, named: sc.named, total: sc.total, measured: !!(sc.measured && sc.total > 0), rival: sc.rivals && sc.rivals[0] ? sc.rivals[0].name : '' });
+    res.set('Cache-Control', 'public, max-age=600').type('png').send(buf);
+  } catch (e) { fallback(); }
+}));
+
 /* ------------------------------------------------------------------ public pages */
 router.get(new RegExp(`^${LANGS}/report/([A-Za-z0-9_-]{16,64})/?$`), wrap(async (req, res) => {
   const lang = langOf(req), token = req.params[1];
@@ -49,7 +81,8 @@ router.get(new RegExp(`^${LANGS}/report/([A-Za-z0-9_-]{16,64})/?$`), wrap(async 
     const p = run.profile || {};
     const name = run.business_name || (lang === 'ar' ? p.name_ar || p.name : p.name) || site;
     const content = P.report({ run, answers, lang, name, site, token });
-    return res.send(R.page({ lang, title: `${name} · ${lang === 'en' ? 'AI visibility report' : 'تقرير الظهور في الذكاء الاصطناعي'}`, desc: name, slug: 'report/' + token, content, index: false, extra: extra(lang) }));
+    const pv = previewOf(lang, name, run.scan);
+    return res.send(R.page({ lang, title: pv.title, desc: pv.desc, slug: 'report/' + token, content, index: false, extra: extra(lang), ogImage: pv.image.replace('__T__', token) }));
   }
   if (run && run.status === 'done' && !run.scan && rq) {
     const old = (await q('SELECT token FROM score_reports WHERE request_id=$1', [rq.id])).rows[0];

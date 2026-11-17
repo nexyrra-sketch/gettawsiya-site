@@ -84,6 +84,24 @@ const visit = (path, h) => fetch(BASE + path, { headers: Object.assign({ 'User-A
   ok(Array.isArray(D.todo) && Array.isArray(D.followups), 'today: to-do and follow-ups');
   r = await anon.req('GET', '/admin/'); ok(/id="adm-nav"/.test(r.text) && /admin9\.js/.test(r.text) && !/class="site-footer"/.test(r.text), 'admin page has its own shell, no site footer');
 
+  console.log('link previews');
+  r = await anon.req('GET', '/en/'); ok(/og:image" content="[^"]*og-en\.png\?v=2"/.test(r.text), 'home page preview picture (English)');
+  const png = await fetch(BASE + '/assets/img/og-ar.png?v=2'); const pb = Buffer.from(await png.arrayBuffer());
+  ok(png.status === 200 && pb.slice(1, 4).toString() === 'PNG' && pb.length < 300 * 1024, 'home preview picture is a PNG under 300 KB (' + (pb.length / 1024 | 0) + ' KB)');
+  const pr = (await admin.req('GET', '/api/admin/scans')).json.items.find((x) => x.site === 'pi.test' && x.token && x.status === 'done');
+  if (pr) {
+    r = await anon.req('GET', '/en/report/' + pr.token + '/');
+    const og = (r.text.match(/og:image" content="([^"]+)"/) || [])[1] || '';
+    ok(/\/og\/report\/[A-Za-z0-9_-]+\.png\?l=en$/.test(og), 'report page has its own preview picture');
+    ok(/og:title" content="[^"]*: \d+\/100 on AI visibility"/.test(r.text), 'report preview title shows the score');
+    ok(/twitter:image" content="[^"]*\/og\/report\//.test(r.text), 'twitter/X card uses the same picture');
+    const img = await fetch(BASE + og.replace(/^https?:\/\/[^/]+/, '')); const ib = Buffer.from(await img.arrayBuffer());
+    ok(img.status === 200 && ib.slice(1, 4).toString() === 'PNG' && ib.length > 20000 && ib.length < 300 * 1024, 'report preview picture is drawn (' + (ib.length / 1024 | 0) + ' KB)');
+    const ar = await fetch(BASE + '/og/report/' + pr.token + '.png?l=ar'); ok(ar.status === 200 && (await ar.arrayBuffer()).byteLength > 20000, 'Arabic report preview picture');
+    r = await anon.req('GET', '/report/' + pr.token + '/'); ok(/og:title" content="[^"]*: \d+\/100 في ظهور الذكاء الاصطناعي"/.test(r.text), 'Arabic preview title');
+  } else ok(false, 'a finished report to test previews on');
+  const bad = await fetch(BASE + '/og/report/doesnotexistdoesnotexist.png?l=en'); ok(bad.status === 200 && bad.headers.get('content-type') === 'image/png', 'unknown report link falls back to the home picture');
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });
