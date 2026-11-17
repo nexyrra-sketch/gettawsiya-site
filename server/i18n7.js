@@ -1,0 +1,52 @@
+'use strict';
+/* Strings for the v7 report, live scan and progress (before/after) pages. Arabic first. */
+module.exports = {
+  ar: {
+    kicker: 'تقرير الظهور في الذكاء الاصطناعي', checked: 'تاريخ الفحص', pdf: 'حفظ PDF', copy: 'نسخ الرابط', copied: 'تم النسخ', share_wa: 'مشاركة عبر واتساب',
+    score_of: 'من 100', kpi_named: 'ذُكرت في إجابات الذكاء الاصطناعي', kpi_known: 'مساعدات تعرفك بالاسم', kpi_checks: 'فحوصات الموقع الناجحة', kpi_top: 'الاسم الأكثر ترشيحاً بدلاً منك',
+    not_measured: 'لم يُقَس', none: 'لا أحد', pillars_h: 'درجتك في أربعة محاور', summary_h: 'الخلاصة',
+    says_h: 'ماذا يقول الذكاء الاصطناعي عنك', says_t: 'سألنا كل مساعد عنك بالاسم. هذه إجاباتهم كما وصلت، مختصرة.', knows: 'يعرفك', unknown: 'لا يعرفك جيداً', err: 'تعذر الوصول',
+    ask_h: 'عندما يسأل العملاء', ask_t: 'أسئلة حقيقية يطرحها العملاء، وهل ذُكر اسمك في كل إجابة.', col_q: 'السؤال', col_instead: 'ذُكر بدلاً منك', yes: 'ذُكرت', no: 'لم تُذكر',
+    rivals_h: 'من يرشحه الذكاء الاصطناعي', rivals_t: 'عدد مرات ذكر كل اسم في الإجابات.', you: 'أنت', sources_h: 'من أين يستقي الذكاء الاصطناعي معلوماته', sources_t: 'المواقع التي استشهدت بها المساعدات. الظهور فيها يرفع فرص ترشيحك.',
+    plan_h: 'خطة العمل', plan_t: 'مرتبة حسب الأثر. نستطيع تنفيذها عنك بالكامل.', quick: 'هذا الأسبوع', month: 'هذا الشهر', ongoing: 'مستمر',
+    sev: { high: 'أولوية عالية', medium: 'متوسطة', low: 'منخفضة' }, why: 'لماذا يهم', fix: 'الحل', found: 'ما وجدناه',
+    checks_h: 'موقعك بعين الذكاء الاصطناعي', pass: 'ناجح', fail: 'يحتاج إصلاحاً', manual: 'لم يُفحص',
+    profile_h: 'ما فهمناه عن نشاطك', p_name: 'الاسم', p_cat: 'النشاط', p_where: 'الموقع', p_phone: 'الهاتف', p_email: 'البريد', p_wa: 'واتساب', p_social: 'الحسابات', p_lang: 'اللغات', p_pages: 'صفحات قرأناها', p_services: 'الخدمات', p_wrong: 'هل في المعلومات خطأ؟ راسلنا لنصححها ونعيد الفحص.',
+    cta_h: 'نصلح هذا عنك ونتابعه أسبوعياً', cta_t: 'اشترك وسيقوم فريق توصية بتنفيذ خطة العمل، ثم نعيد الفحص كل أسبوع ونرسل لك تقرير قبل وبعد.', cta_plans: 'اختر خطة', cta_wa: 'تحدث معنا على واتساب', cta_msg: 'مرحباً توصية، رأيت تقرير {site} (الدرجة {score}/100). أريد أن تصلحوا ذلك.',
+    method: 'إجابات الذكاء الاصطناعي تتغير من يوم لآخر، وما يظهر عبر الواجهات البرمجية قد يختلف قليلاً عما يراه شخص مسجل الدخول. الأسماء المذكورة مستخرجة تلقائياً من تنسيق الإجابة. لا نضمن الترشيح؛ نقيس ونحسّن الفرص.', method_link: 'طريقة العمل',
+    grade_t: { A: 'حضور قوي. حافظ عليه.', B: 'أساس جيد، وهناك فرص واضحة.', C: 'يظهر أحياناً، وتفوته أغلب الأسئلة.', D: 'الذكاء الاصطناعي بالكاد يرشحك.', E: 'العملاء الذين يسألون الذكاء الاصطناعي لا يجدونك.' },
+    live_k: 'نجهز تقريرك', live_t: 'عادة من دقيقة إلى ثلاث دقائق. أبقِ الصفحة مفتوحة وسيظهر التقرير تلقائياً.',
+    steps: ['فتح موقعك', 'قراءة الصفحات', 'فهم نشاطك', 'سؤال مساعدات الذكاء الاصطناعي', 'كتابة التقرير'],
+    st_pages: '{n} صفحات', st_found: 'وجدنا', st_ai: '{done} من {total} إجابات', queued: 'في الانتظار…', failed: 'تعذر إكمال الفحص. سنراجعه ونرسله لك.',
+    send_h: 'أين نرسل التقرير؟', send_t: 'اختياري: سنرسل الرابط إلى بريدك أو واتساب.', send_ph: 'البريد أو رقم واتساب', send_btn: 'أرسل لي', send_ok: 'تم. سنرسله عند جاهزيته.',
+    feed_named: 'ذكرك', feed_not: 'لم يذكرك', feed_brand: 'سُئل عنك بالاسم', no_site: 'لم يتم تحميل الموقع: {err}',
+    prog_k: 'تقرير التقدم', prog_from: 'من {a} إلى {b}', before: 'قبل', after: 'بعد', points: 'نقطة', change: 'التغير',
+    fixed_h: 'ما تم إصلاحه', still_h: 'ما زال قيد العمل', fresh_h: 'جديد يحتاج انتباهاً', work_h: 'ما نفذه فريق توصية', same_h: 'السؤال نفسه، قبل وبعد', nothing: 'لا شيء بعد.',
+    prog_cta_h: 'نواصل العمل', prog_cta_t: 'نعيد الفحص أسبوعياً ونحدّث هذا التقرير تلقائياً.', prog_none: 'لا يوجد فحص ثانٍ بعد. يظهر التقرير بعد الفحص التالي.', baseline: 'الفحص الأول', latest: 'آخر فحص',
+    open_report: 'فتح التقرير الكامل'
+  },
+  en: {
+    kicker: 'AI visibility report', checked: 'Checked', pdf: 'Save as PDF', copy: 'Copy link', copied: 'Copied', share_wa: 'Share on WhatsApp',
+    score_of: 'out of 100', kpi_named: 'Named in AI answers', kpi_known: 'Assistants that know you', kpi_checks: 'Website checks passed', kpi_top: 'Name AI recommends most instead',
+    not_measured: 'Not measured', none: 'Nobody', pillars_h: 'Your score in four parts', summary_h: 'In short',
+    says_h: 'What AI says about you', says_t: 'We asked each assistant about you by name. Their answers, shortened.', knows: 'Knows you', unknown: "Doesn't know you well", err: 'Unavailable',
+    ask_h: 'When customers ask', ask_t: 'Real customer questions, and whether you were named in each answer.', col_q: 'Question', col_instead: 'Named instead', yes: 'Named', no: 'Not named',
+    rivals_h: 'Who AI recommends', rivals_t: 'How often each name came up in the answers.', you: 'You', sources_h: 'Where AI gets its information', sources_t: 'The sites the assistants cited. Being present on them raises your chances.',
+    plan_h: 'Action plan', plan_t: 'Ordered by impact. We can do all of it for you.', quick: 'This week', month: 'This month', ongoing: 'Ongoing',
+    sev: { high: 'High priority', medium: 'Medium', low: 'Low' }, why: 'Why it matters', fix: 'The fix', found: 'What we found',
+    checks_h: 'Your website through AI’s eyes', pass: 'Passed', fail: 'Needs fixing', manual: 'Not checked',
+    profile_h: 'What we understood about your business', p_name: 'Name', p_cat: 'Business', p_where: 'Location', p_phone: 'Phone', p_email: 'Email', p_wa: 'WhatsApp', p_social: 'Profiles', p_lang: 'Languages', p_pages: 'Pages read', p_services: 'Services', p_wrong: 'Something wrong? Message us and we will correct it and re-check.',
+    cta_h: 'We fix this for you and track it weekly', cta_t: 'Choose a plan and the Tawsiya team does the action plan for you, re-checks every week and sends you a before-and-after report.', cta_plans: 'Choose a plan', cta_wa: 'Talk to us on WhatsApp', cta_msg: 'Hi Tawsiya, I saw the report for {site} (score {score}/100). I want you to fix it.',
+    method: 'AI answers change from day to day, and answers through the API can differ slightly from what a signed-in person sees. Names mentioned are read automatically from the answer formatting. Nobody can guarantee a recommendation; we measure and improve the odds.', method_link: 'Method',
+    grade_t: { A: 'Strong presence. Keep it.', B: 'A good base with clear openings.', C: 'You show up sometimes and miss most questions.', D: 'AI barely recommends you.', E: 'Customers who ask AI are not finding you.' },
+    live_k: 'Building your report', live_t: 'Usually 1 to 3 minutes. Keep this page open; the report appears by itself.',
+    steps: ['Opening your website', 'Reading your pages', 'Understanding your business', 'Asking the AI assistants', 'Writing your report'],
+    st_pages: '{n} pages', st_found: 'Found', st_ai: '{done} of {total} answers', queued: 'Waiting…', failed: 'We could not finish this check. We will review it and send it to you.',
+    send_h: 'Where should we send it?', send_t: 'Optional: we will send the link to your email or WhatsApp.', send_ph: 'Email or WhatsApp number', send_btn: 'Send it to me', send_ok: 'Done. We will send it when it is ready.',
+    feed_named: 'named you', feed_not: 'did not name you', feed_brand: 'asked about you by name', no_site: 'The website did not load: {err}',
+    prog_k: 'Progress report', prog_from: '{a} to {b}', before: 'Before', after: 'After', points: 'points', change: 'Change',
+    fixed_h: 'Fixed', still_h: 'Still in progress', fresh_h: 'New, needs attention', work_h: 'Work done by Tawsiya', same_h: 'Same question, before and after', nothing: 'Nothing yet.',
+    prog_cta_h: 'We keep going', prog_cta_t: 'We re-check every week and this report updates by itself.', prog_none: 'No second check yet. This report appears after the next check.', baseline: 'First check', latest: 'Latest check',
+    open_report: 'Open the full report'
+  }
+};

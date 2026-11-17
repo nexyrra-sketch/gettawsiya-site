@@ -1,0 +1,10 @@
+{
+  "name": "tawsiya-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tawsiya web service: serves the static site and the account, score, verified, partner and admin API.",
+  "main": "index.js",
+  "scripts": { "start": "node index.js", "test": "node test/run.js" },
+  "engines": { "node": ">=20" },
+  "dependencies": { "express": "4.21.2", "pg": "8.13.1" }
+}

@@ -1,0 +1,54 @@
+# Render Blueprint: one Node web service (site + API) and one Postgres database.
+# Repo layout expected: /site (built website), /server (Node app), /render.yaml
+databases:
+  - name: tawsiya-db
+    plan: basic-256mb        # check current plans on render.com/pricing
+    databaseName: tawsiya
+    user: tawsiya
+
+services:
+  - type: web
+    name: tawsiya
+    runtime: node
+    plan: starter            # check current plans on render.com/pricing
+    buildCommand: npm install --omit=dev --prefix server
+    startCommand: node server/index.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tawsiya-db
+          property: connectionString
+      - key: ADMIN_EMAIL
+        sync: false          # you type this in the Render dashboard
+      - key: ADMIN_PASSWORD
+        sync: false          # you type this in the Render dashboard (12+ characters)
+      - key: PUBLIC_URL
+        value: https://gettawsiya.com
+      # Each integration switches on when its key is set. Leave blank to keep it off.
+      - key: ZIINA_API_KEY
+        sync: false          # from ziina.com/business/connect
+      - key: ZIINA_WEBHOOK_SECRET
+        sync: false          # any long random text you choose
+      - key: ZIINA_TEST_MODE
+        value: "1"           # "1" = test payments (nothing charged). Set to "0" to take real money.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PERPLEXITY_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        value: Tawsiya <hello@gettawsiya.com>
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: FREE_SCORES_PER_DAY
+        value: "10"         # free reports per day (also editable in Admin > Money)
+      - key: AI_BUDGET_AED
+        value: "300"        # monthly AI budget; free reports pause when reached (0 = no cap)
