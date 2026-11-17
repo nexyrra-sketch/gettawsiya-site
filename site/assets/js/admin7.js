@@ -10,8 +10,8 @@
   var LEAD = [["new", "New"], ["contacted", "Contacted"], ["talking", "Talking"], ["won", "Won"], ["lost", "Lost"]];
   var poll = null;
 
-  A.TABS.splice(1, 0, ["scans", "Scans"], ["clients", "Clients"], ["money", "Money"], ["traffic", "Traffic"]);
-  A.TABS.forEach(function (t) { if (t[0] === "requests") t[1] = "Score requests (old)"; });
+  A.TABS.splice(1, 0, ["scans", "Scans & leads"], ["clients", "Clients"], ["money", "Money"], ["traffic", "Traffic"]);
+  A.TABS.forEach(function (t) { if (t[0] === "requests") t[1] = "Old score requests"; });
 
   function scoreBadge(n, g) {
     if (n == null) return h("span", { class: "ap-meta" }, "–");
@@ -81,7 +81,7 @@
   var NICE = { direct: "Direct / typed", unknown: "Unknown", google: "Google", instagram: "Instagram", facebook: "Facebook", tiktok: "TikTok", x: "X (Twitter)", linkedin: "LinkedIn",
     whatsapp: "WhatsApp", youtube: "YouTube", snapchat: "Snapchat", chatgpt: "ChatGPT", perplexity: "Perplexity", gemini: "Gemini", claude: "Claude", copilot: "Copilot", bing: "Bing" };
   function srcName(s) { return NICE[s] || s || "Unknown"; }
-  function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 + "%" : "–"; }
+  function pct(a, b) { return b && a <= b ? Math.round(a / b * 1000) / 10 + "%" : "–"; }
   A.VIEWS.traffic = function () {
     stop();
     return api("GET", "/traffic?days=" + tDays).then(function (t) {
@@ -109,7 +109,7 @@
       TW.mount(body(), h("div", { class: "tw-ws" },
         sec("Visitors", [periods,
           h("div", { class: "ap-stats" }, stat("Visitors", String(t.visitors), "people, counted once a day"), stat("Page views", String(t.views)),
-            stat("Free reports", String(t.reports), pct(t.reports, t.visitors) + " of visitors"), stat("Reports with contact", String(t.with_contact), "people you can follow up"),
+            stat("Free reports", String(t.reports), t.reports <= t.visitors && t.visitors ? pct(t.reports, t.visitors) + " of visitors" : "including your own scans"), stat("Reports with contact", String(t.with_contact), "people you can follow up"),
             stat("New accounts", String(t.signups)), stat("Payments", String(t.payments)), stat("Sent by AI assistants", String(t.ai_visitors), "ChatGPT, Perplexity, Gemini…", t.ai_visitors ? "tw-pos" : "")),
           h("p", { class: "ap-fine" }, "Counted on your own server: no cookies, no Google tracking, and bots are left out. Your own admin pages are not counted.")]),
         sec("Where they come from", [t.sources.length ? table([["Source", function (s) { return h("b", null, srcName(s.src)); }], ["Visitors", function (s) { return String(s.visitors); }], ["Views", function (s) { return String(s.views); }],
@@ -118,7 +118,15 @@
           : h("p", { class: "ap-fine" }, "When you share a tracked link (made below), each post shows here with the visitors and reports it brought.")]),
         sec("Make a tracked link for a post", [h("p", { class: "ap-fine" }, "Use a different link for every post, story or message. Then this page shows which one brings people and reports."),
           h("div", { class: "tw-form3" }, where, what, page), h("div", { class: "ap-row" }, linkOut, copyB)]),
-        sec("Day by day", [table([["Day", function (d) { return d.d; }], ["Visitors", function (d) { return String(d.visitors); }], ["Views", function (d) { return String(d.views); }], ["Free reports", function (d) { return String(d.reports); }]], t.daily)]),
+        sec("Day by day", [(function () {
+          var days = t.daily.slice().reverse(), max = Math.max.apply(null, days.map(function (d) { return d.visitors; }).concat([1]));
+          return h("div", { class: "adm-chart", role: "img", "aria-label": "Visitors per day, last " + days.length + " days" }, days.map(function (d) {
+            var day = new Date(d.d + "T00:00:00");
+            return h("div", { class: "adm-bar" + (d.reports ? " has-r" : ""), title: d.d + ": " + d.visitors + " visitors, " + d.reports + " free reports" },
+              h("i", { style: "--v:" + Math.round(d.visitors / max * 100) + "%" }), h("small", null, day.getDate() === 1 || days.length <= 14 || day.getDay() === 1 ? String(day.getDate()) : ""));
+          }));
+        })(), h("p", { class: "ap-fine" }, "Visitors per day. Gold bars are days that brought at least one free report."),
+          h("details", { class: "tw-more" }, h("summary", null, "Show the numbers"), table([["Day", function (d) { return d.d; }], ["Visitors", function (d) { return String(d.visitors); }], ["Views", function (d) { return String(d.views); }], ["Free reports", function (d) { return String(d.reports); }]], t.daily))]),
         sec("Most viewed pages", [t.pages.length ? table([["Page", function (p) { return h("a", { href: p.path, target: "_blank", rel: "noopener", dir: "ltr" }, p.path); }], ["Views", function (p) { return String(p.views); }], ["Visitors", function (p) { return String(p.visitors); }]], t.pages) : h("p", { class: "ap-fine" }, "No page views yet.")]),
         sec("Booking link", [h("p", { class: "ap-fine" }, "Make a free 15-minute event on Cal.com or Calendly and paste its link here. A \"Book a free 15-minute call\" button then appears on every report and on the home page. Leave it empty to hide the button."),
           bookF, h("div", { class: "ap-row" }, bookSave), bookOut])));
@@ -183,6 +191,8 @@
     stop();
     return api("GET", "/clients").then(function (r) {
       TW.mount(body(), sec("Clients", [h("p", { class: "ap-fine" }, "Every business you work for. Before is the first scan (or the one you choose); Now is the latest."),
+        !r.items.length ? h("div", { class: "adm-clear" }, h("b", null, "No clients yet."), h("p", { class: "ap-fine" }, "When a lead says yes, open Scans & leads and press Make client. Their action plan and before/after report start here."),
+          h("p", null, h("a", { class: "v4-btn v4-btn-sm v4-btn-dark", href: "#scans", onclick: function (e) { e.preventDefault(); A.setTab("scans"); } }, "Go to Scans & leads"))) :
         table([["Business", function (b) { return h("div", null, h("b", { dir: "auto" }, b.name_en || b.name_ar || b.slug), h("br"), h("span", { class: "ap-meta", dir: "ltr" }, b.website || "")); }],
           ["Owner", function (b) { return h("span", { dir: "ltr" }, b.owner_email || "–"); }], ["Plan", function (b) { return b.plan ? chip(b.plan) : h("span", { class: "ap-meta" }, "free"); }],
           ["Before → now", function (b) { var d = b.before != null && b.now != null ? b.now - b.before : null; return h("span", { class: "tw-ba" }, scoreBadge(b.before), " → ", scoreBadge(b.now), d ? h("b", { class: d > 0 ? "up" : "down" }, " " + (d > 0 ? "+" : "") + d) : null); }],

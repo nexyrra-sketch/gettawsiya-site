@@ -37,39 +37,32 @@ try{var t=localStorage.getItem('tw-theme');if(t==='light'||t==='dark')document.d
 </head>
 <body class="lang-en v4 page-app page-admin">
 <a class="skip" href="#main">Skip to content</a>
-<header class="v4-header site-header" data-header>
-  <div class="wrap v4-hdr">
-    <a class="brand" href="../en/" aria-label="Tawsiya home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path class="mark-bowl" d="M58 27C59 41 48 49.5 32 49.5C15 49.5 5 41 4 24C5.3 23.4 6.6 23.6 7.6 24.6C9.5 36 18 43 32 43C45 43 53 37.5 54 28C55.3 27.2 56.8 26.8 58 27Z"/><path class="mark-bowl" d="M25 18.2L29.8 23L25 27.8L20.2 23Z"/><path class="mark-dot" d="M39.5 8.7L44.3 13.5L39.5 18.3L34.7 13.5Z"/></svg><span class="brand-word">Tawsiya</span><span class="brand-alt" lang="ar">توصية</span></a>
-    <nav class="v4-nav" aria-label="Main navigation"><ul><li><a href="../en/#how">How it works</a></li><li><a href="../en/#report">The report</a></li><li><a href="../en/#sectors">Sectors</a></li><li><a href="../en/plans/">Pricing</a></li><li><a href="../en/guides/">Guides</a></li></ul></nav>
-    <div class="v4-actions">
-      <a class="v4-lang" href="../" hreflang="ar" lang="ar" aria-label="اقرأ الموقع بالعربية"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/></svg><span>العربية</span></a>
-      <button class="icon-btn v4-theme" type="button" data-theme-toggle aria-label="Switch light or dark theme"><span class="i-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></span><span class="i-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span></button>
-      <a class="v4-signin" href="../en/signin/">Sign in</a>
-      <a class="v4-btn v4-btn-dark v4-btn-sm" href="../en/#check-form-hero">Start free</a>
-      <button class="icon-btn menu-btn" type="button" data-menu aria-expanded="false" aria-controls="mnav" aria-label="Menu" data-label-open="Menu" data-label-close="Close menu"><span class="i-open"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></span><span class="i-close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></button>
+<div class="adm">
+  <aside class="adm-side" id="adm-side" aria-label="Admin menu">
+    <div class="adm-brand"><a class="brand" href="../en/" aria-label="Tawsiya home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path class="mark-bowl" d="M58 27C59 41 48 49.5 32 49.5C15 49.5 5 41 4 24C5.3 23.4 6.6 23.6 7.6 24.6C9.5 36 18 43 32 43C45 43 53 37.5 54 28C55.3 27.2 56.8 26.8 58 27Z"/><path class="mark-bowl" d="M25 18.2L29.8 23L25 27.8L20.2 23Z"/><path class="mark-dot" d="M39.5 8.7L44.3 13.5L39.5 18.3L34.7 13.5Z"/></svg><span class="brand-word">Tawsiya</span><span class="brand-alt" lang="ar">توصية</span></a><span class="adm-badge">Admin</span></div>
+    <nav class="adm-nav" id="adm-nav" aria-label="Admin"></nav>
+    <div class="adm-sidefoot">
+      <a class="adm-link" href="../en/" target="_blank" rel="noopener">View website ↗</a>
+      <button class="adm-link" type="button" data-theme-toggle aria-label="Light or dark">Light / dark</button>
     </div>
+  </aside>
+  <div class="adm-scrim" data-adm-close hidden></div>
+  <div class="adm-main">
+    <header class="adm-top">
+      <button class="adm-menu" type="button" aria-controls="adm-side" aria-expanded="false" data-adm-menu aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
+      <div class="adm-title"><p class="adm-crumb" id="adm-crumb">Admin</p><h1 id="adm-h1">Tawsiya admin</h1></div>
+      <div class="adm-acts" id="adm-acts"></div>
+    </header>
+    <main id="main" class="adm-content"><div id="app-root" class="ap-app">Loading…</div>
+    <noscript><p class="ap-note">Please turn on JavaScript.</p></noscript></main>
   </div>
-  <div class="mnav" id="mnav" hidden>
-    <nav aria-label="Menu"><ul><li><a href="../en/#how">How it works</a></li><li><a href="../en/#report">The report</a></li><li><a href="../en/#sectors">Sectors</a></li><li><a href="../en/plans/">Pricing</a></li><li><a href="../en/guides/">Guides</a></li><li><a href="../en/signin/">Sign in</a></li><li><a href="../" lang="ar">العربية</a></li></ul></nav>
-    <a class="v4-btn v4-btn-dark" href="../en/#check-form-hero">Start free</a>
-  </div>
-</header>
-<main id="main"><section class="v4-sec ap-sec"><div class="wrap wide"><div id="app-root" class="ap-app">Loading…</div><noscript><p class="ap-note">Please turn on JavaScript.</p></noscript></div></section></main>
-<footer class="v4-footer site-footer">
-  <div class="wrap v4-foot">
-    <div class="v4-fbrand"><a class="brand" href="../en/" aria-label="Tawsiya home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path class="mark-bowl" d="M58 27C59 41 48 49.5 32 49.5C15 49.5 5 41 4 24C5.3 23.4 6.6 23.6 7.6 24.6C9.5 36 18 43 32 43C45 43 53 37.5 54 28C55.3 27.2 56.8 26.8 58 27Z"/><path class="mark-bowl" d="M25 18.2L29.8 23L25 27.8L20.2 23Z"/><path class="mark-dot" d="M39.5 8.7L44.3 13.5L39.5 18.3L34.7 13.5Z"/></svg><span class="brand-word">Tawsiya</span><span class="brand-alt" lang="ar">توصية</span></a><p>Tawsiya helps UAE businesses get recommended by ChatGPT, Gemini and Google. Arabic-first, from Dubai.</p>
-      <a class="v4-btn v4-btn-line v4-btn-sm" href="https://wa.me/971507901022?text=Hello%20Tawsiya" data-contact="Hello Tawsiya" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5l1.3-3.8A8 8 0 1 1 8.6 19l-4.6.5Z"/><path d="M9 10.5h6M9 13.5h4"/></svg><span>WhatsApp us</span></a></div>
-    <div class="v4-fcol"><h2>Product</h2><ul><li><a href="../en/#how">How it works</a></li><li><a href="../en/score/">Free Score</a></li><li><a href="../en/plans/">Plans</a></li><li><a href="../en/#pricing">Pricing</a></li><li><a href="../en/signin/">Sign in</a></li></ul></div><div class="v4-fcol"><h2>Company</h2><ul><li><a href="../en/ai-index/">UAE AI Index</a></li><li><a href="../en/verified/">Tawsiya Verified</a></li><li><a href="../en/method/">Method</a></li><li><a href="../en/partners/">Partners</a></li><li><a href="../en/guides/">Guides</a></li></ul></div><div class="v4-fcol"><h2>Sectors</h2><ul><li><a href="../en/clinics/">Clinics</a></li><li><a href="../en/restaurants/">Restaurants &amp; cafés</a></li><li><a href="../en/real-estate/">Real estate</a></li><li><a href="../en/salons/">Salons &amp; spas</a></li></ul></div><div class="v4-fcol"><h2>Legal</h2><ul><li><a href="../en/terms/">Terms</a></li><li><a href="../en/privacy/">Privacy</a></li><li><a href="mailto:hello@gettawsiya.com">Email us</a></li></ul></div>
-  </div>
-  <div class="wrap v4-fbase"><p>© 2026 Tawsiya · Dubai, United Arab Emirates</p><p>Get recommended by AI.</p></div>
-  <div class="wrap"><p class="v4-disc">Tawsiya is an independent studio and is not affiliated with OpenAI, Google, Anthropic or Perplexity. Product names are used only to describe which AI assistants we test.</p></div>
-  <a class="wa-float" href="https://wa.me/971507901022?text=Hello%20Tawsiya" data-contact="Hello Tawsiya" rel="noopener" aria-label="Chat with Tawsiya on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5l1.3-3.8A8 8 0 1 1 8.6 19l-4.6.5Z"/><path d="M9 10.5h6M9 13.5h4"/></svg></a>
-</footer>
+</div>
 <script type="application/json" id="tw-i18n">{"lang": "en", "engines": ["ChatGPT", "Gemini", "Claude", "Google AI", "Perplexity"], "hits": [[0, 1, 0, 0], [0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]], "questions": {"clinic": ["best clinic in {city} open on weekends", "clinic in {city} with Arabic-speaking doctors", "affordable, trusted clinic in {city}", "which clinic in {city} has the best reviews"], "restaurant": ["best restaurant in {city} for a family dinner", "restaurant in {city} with private dining", "where to eat late at night in {city}", "good place in {city} for a business lunch"], "realestate": ["trusted real estate agency in {city} for first-time buyers", "who should I rent an apartment with in {city}", "best agent for off-plan property in {city}", "Arabic-speaking real estate company in {city}"], "salon": ["best ladies’ salon in {city} for bridal makeup", "salon in {city} with home service", "best hair colour specialist in {city}", "salon in {city} open late"], "other": ["best local brand in {city} people recommend", "trusted company in {city} with great reviews", "where to buy from a UAE brand in {city}", "which new business in {city} is worth trying"], "services": ["reliable accountant in {city} for a small business", "business setup consultant in {city}", "law firm in {city} for commercial contracts", "marketing agency in {city} for SMEs"]}, "asking": "Asking", "named": "named you", "notNamed": "named others", "defaultName": "your business", "msg": "Hello Tawsiya, I'd like a free AI Check for: {name} ({cat}, {city}).", "cats": {"clinic": "Clinic", "restaurant": "Restaurant or café", "realestate": "Real estate", "salon": "Salon or spa", "services": "Professional services", "other": "Other / new brand"}, "cities": {"Dubai": "Dubai", "Abu Dhabi": "Abu Dhabi", "Sharjah": "Sharjah", "Ajman": "Ajman", "Ras Al Khaimah": "Ras Al Khaimah", "Fujairah": "Fujairah", "Umm Al Quwain": "Umm Al Quwain"}, "errName": "Please enter your business name.", "linkLabel": "Link", "wz": {"msg": "Hello Tawsiya, I'd like to start a project.", "labels": {"intent": "Goal", "name": "Name", "brand": "Business", "city": "City", "link": "Link", "budget": "Budget", "time": "Timeline", "msg": "Notes"}, "err_name": "Please enter your name.", "err_intent": "Choose what you want to do."}, "urlMsg": "Hello Tawsiya, I'd like a free AI visibility check for my website: ", "scoreUrl": "/en/score/", "contact": {"whatsapp": "971507901022", "email": "hello@gettawsiya.com"}}</script>
 <script src="../assets/js/config.js"></script>
 <script src="../assets/js/app.js" defer></script>
 <script src="../assets/js/core.js" defer></script>
 <script src="../assets/js/admin.js" defer></script>
 <script src="../assets/js/admin7.js" defer></script>
+<script src="../assets/js/admin9.js" defer></script>
 </body>
 </html>

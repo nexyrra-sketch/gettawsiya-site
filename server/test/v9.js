@@ -76,6 +76,14 @@ const visit = (path, h) => fetch(BASE + path, { headers: Object.assign({ 'User-A
   r = await admin.req('PUT', '/api/admin/settings', { booking_url: '' }); ok(r.status === 200, 'booking link removed');
   r = await anon.req('GET', '/api/site-config'); ok(r.json.booking_url === null, 'booking buttons hidden again');
 
+  console.log('admin today');
+  r = await anon.req('GET', '/api/admin/today'); ok(r.status === 401 || r.status === 403, 'today is admin only');
+  r = await admin.req('GET', '/api/admin/today'); const D = r.json || {};
+  ok(r.status === 200 && D.kpi && typeof D.kpi.mrr === 'number' && D.kpi.visitors_7d >= 1, 'today: numbers (visitors ' + (D.kpi && D.kpi.visitors_7d) + ')');
+  ok(Array.isArray(D.setup) && D.setup.length >= 8 && D.setup.some((x) => x.key === 'scan' && x.done), 'today: launch checklist knows a scan was run');
+  ok(Array.isArray(D.todo) && Array.isArray(D.followups), 'today: to-do and follow-ups');
+  r = await anon.req('GET', '/admin/'); ok(/id="adm-nav"/.test(r.text) && /admin9\.js/.test(r.text) && !/class="site-footer"/.test(r.text), 'admin page has its own shell, no site footer');
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

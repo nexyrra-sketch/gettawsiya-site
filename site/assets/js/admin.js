@@ -4,7 +4,7 @@
   var TW = window.TW, h = TW.h, root = document.getElementById("app-root");
   if (!root) return;
   var ASSISTANTS = ["ChatGPT", "Gemini", "Claude", "Perplexity", "Google AI"];
-  var tab = (location.hash || "#overview").slice(1), CHECKS = [];
+  var tab = (location.hash || "#today").slice(1), CHECKS = [];
   var api = function (m, u, b) { return TW.api(m, "/api/admin" + u, b); };
   var E = function (e) { return (e && e.code ? e.code.replace(/_/g, " ") : "error") + (e && e.status ? " (" + e.status + ")" : ""); };
   var iso = function (d) { return d ? String(d).slice(0, 10) : ""; };
@@ -23,14 +23,49 @@
   function F(label, o) { return TW.field(label, o); }
 
   /* ----------------------------------------------------------- shell */
-  var TABS = [["overview", "Overview"], ["requests", "Score requests"], ["businesses", "Businesses"], ["users", "Users"], ["partners", "Partners"], ["leads", "Leads"], ["index", "Index"], ["billing", "Billing"], ["auto", "Automation"]];
+  var TABS = [["overview", "System counts"], ["requests", "Score requests"], ["businesses", "Businesses"], ["users", "Users"], ["partners", "Partners"], ["leads", "Website enquiries"], ["index", "AI Index"], ["billing", "Plans & payments"], ["auto", "Connections"]];
+  /* sidebar groups (tabs not listed fall into "More") */
+  var GROUPS = [["Run the business", ["today", "scans", "clients", "traffic"]], ["Money", ["money", "billing"]], ["Setup", ["auto"]], ["More", []]];
   var body = h("div", { class: "ap-admin-body" });
+  var side = document.getElementById("adm-nav"), built = false;
+  function label(k) { for (var i = 0; i < TABS.length; i++) if (TABS[i][0] === k) return TABS[i][1]; return k; }
+  function groupOf(k) { for (var i = 0; i < GROUPS.length - 1; i++) if (GROUPS[i][1].indexOf(k) > -1) return GROUPS[i][0]; return "More"; }
+  function menu(open) {
+    var sb = document.getElementById("adm-side"), sc = document.querySelector("[data-adm-close]"), mb = document.querySelector("[data-adm-menu]");
+    if (!sb) return; document.documentElement.classList.toggle("adm-open", !!open); if (sc) sc.hidden = !open; if (mb) mb.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  function chrome() {
+    if (!side) return;
+    if (!built) {
+      built = true;
+      var mb = document.querySelector("[data-adm-menu]"), sc = document.querySelector("[data-adm-close]");
+      if (mb) mb.addEventListener("click", function () { menu(!document.documentElement.classList.contains("adm-open")); });
+      if (sc) sc.addEventListener("click", function () { menu(false); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") menu(false); });
+      var acts = document.getElementById("adm-acts");
+      if (acts) TW.mount(acts, h("button", { class: "v4-btn v4-btn-line v4-btn-sm", type: "button", onclick: TW.logout }, "Sign out"));
+    }
+    var keys = TABS.map(function (t) { return t[0]; });
+    TW.mount(side, GROUPS.map(function (g) {
+      var list = g[0] === "More" ? keys.filter(function (k) { return groupOf(k) === "More"; }) : g[1].filter(function (k) { return keys.indexOf(k) > -1; });
+      if (!list.length) return null;
+      return h("div", { class: "adm-group" }, h("p", { class: "adm-glabel" }, g[0]), h("ul", null, list.map(function (k) {
+        return h("li", null, h("a", { href: "#" + k, class: "adm-item" + (tab === k ? " on" : ""), "aria-current": tab === k ? "page" : null, "data-k": k,
+          onclick: function () { menu(false); if (tab === k) { setTimeout(go, 0); } } }, label(k), h("span", { class: "adm-count", "data-count": k })));
+      })));
+    }));
+    var h1 = document.getElementById("adm-h1"), cr = document.getElementById("adm-crumb");
+    if (h1) h1.textContent = label(tab); if (cr) cr.textContent = groupOf(tab);
+    document.title = label(tab) + " | Tawsiya admin";
+    if (window.TWA && window.TWA.onNav) window.TWA.onNav(tab);
+  }
   function shell() {
+    if (side) { chrome(); TW.mount(root, body); return; }
     TW.mount(root, [h("header", { class: "ap-dhead" }, h("div", null, h("p", { class: "v4-kicker" }, "Admin"), h("h1", null, "Tawsiya admin")), h("button", { class: "v4-btn v4-btn-line v4-btn-sm", type: "button", onclick: TW.logout }, "Sign out")),
       h("nav", { class: "ap-tabs", "aria-label": "Admin" }, TABS.map(function (t) { return h("a", { href: "#" + t[0], class: "ap-tab" + (tab === t[0] ? " on" : ""), "aria-current": tab === t[0] ? "page" : null, onclick: function () { tab = t[0]; setTimeout(go, 0); } }, t[1]); })), body]);
   }
   function go() { shell(); TW.mount(body, h("p", { class: "ap-fine" }, "Loading…")); (VIEWS[tab] || VIEWS.overview)().catch(function (e) { if (e.status === 401 || e.status === 403) { location.href = "/en/signin/"; return; } TW.mount(body, h("p", { class: "ap-err" }, E(e))); }); }
-  window.addEventListener("hashchange", function () { var t = (location.hash || "#overview").slice(1); if (t !== tab && VIEWS[t]) { tab = t; go(); } });
+  window.addEventListener("hashchange", function () { var t = (location.hash || "#today").slice(1); if (t !== tab && VIEWS[t]) { tab = t; go(); window.scrollTo(0, 0); } });
 
   /* ----------------------------------------------------------- overview */
   var VIEWS = {};

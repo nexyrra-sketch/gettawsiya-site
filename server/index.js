@@ -56,6 +56,7 @@ function createApp() {
   app.use(V7.router);
   app.use(TR.pub);
   app.use('/api/admin', TR.admin);
+  app.use('/api/admin', require('./today').router);
   app.use('/api/admin', V7.admin);
   app.use('/api/auth', A.router);
   app.use('/api/client', API.client);
