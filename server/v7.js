@@ -62,9 +62,20 @@ router.get(/^\/og\/report\/([A-Za-z0-9_-]{16,64})\.png$/, U.limit('og', 120, 60e
     if (!x || !x.run || x.run.status !== 'done' || !x.run.scan) return fallback();
     const sc = x.run.scan, p = x.run.profile || {};
     const name = x.run.business_name || (lang === 'ar' ? p.name_ar || p.name : p.name) || x.run.site || (x.rq && x.rq.site) || '';
-    const buf = OG.reportPng({ lang, name, score: sc.overall, named: sc.named, total: sc.total, measured: !!(sc.measured && sc.total > 0), rival: sc.rivals && sc.rivals[0] ? sc.rivals[0].name : '' });
+    const lg = p.logo ? (await q('SELECT type, data FROM run_logos WHERE run_id=$1', [x.run.id])).rows[0] : null;
+    const buf = OG.reportPng({ lang, logo: lg || null, logoKey: x.run.id, name, score: sc.overall, named: sc.named, total: sc.total, measured: !!(sc.measured && sc.total > 0), rival: sc.rivals && sc.rivals[0] ? sc.rivals[0].name : '' });
     res.set('Cache-Control', 'public, max-age=600').type('png').send(buf);
   } catch (e) { fallback(); }
+}));
+
+/* the business's own logo, as found on its website when the report was made */
+router.get(/^\/brand\/logo\/([A-Za-z0-9_-]{16,64})$/, U.limit('logo', 300, 60e3), wrap(async (req, res) => {
+  const x = await resolve(req.params[0]);
+  const lg = x && x.run ? (await q('SELECT type, data FROM run_logos WHERE run_id=$1', [x.run.id])).rows[0] : null;
+  if (!lg) return res.status(404).set('Cache-Control', 'public, max-age=300').end();
+  res.set({ 'Content-Type': lg.type, 'Cache-Control': 'public, max-age=86400', 'X-Content-Type-Options': 'nosniff',
+    'Content-Security-Policy': "default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox", 'Cross-Origin-Resource-Policy': 'same-site' });
+  res.send(lg.data);
 }));
 
 /* ------------------------------------------------------------------ public pages */
@@ -165,7 +176,7 @@ admin.post('/scans', U.limit('admin-scan', 120, 3600e3), wrap(async (req, res) =
 }));
 admin.get('/scans', wrap(async (req, res) => {
   const r = await q(`SELECT s.id,s.token,s.site,s.name,s.contact,s.source,s.status,s.lead_status,s.lead_note,s.lang,s.created_at,s.business_id,s.ref_code,
-      r.id AS run_id, r.status AS run_status, r.stage, r.business_name, r.answers_named, r.answers_total, (r.scan->>'overall')::int AS overall, r.scan->>'grade' AS grade, r.profile->>'category' AS category
+      r.id AS run_id, r.status AS run_status, r.stage, r.business_name, r.answers_named, r.answers_total, (r.scan->>'overall')::int AS overall, r.scan->>'grade' AS grade, r.profile->>'category' AS category, (r.profile->>'logo') IS NOT NULL AS has_logo
     FROM score_requests s LEFT JOIN LATERAL (SELECT * FROM runs WHERE request_id=s.id ORDER BY id DESC LIMIT 1) r ON TRUE ORDER BY s.id DESC LIMIT 300`);
   res.json({ items: r.rows });
 }));

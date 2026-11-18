@@ -200,6 +200,10 @@ CREATE TABLE IF NOT EXISTS visits (id BIGSERIAL PRIMARY KEY, at TIMESTAMPTZ NOT 
 CREATE INDEX IF NOT EXISTS visits_at ON visits(at);
 ALTER TABLE score_requests ADD COLUMN IF NOT EXISTS src TEXT;
 ALTER TABLE score_requests ADD COLUMN IF NOT EXISTS campaign TEXT;
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS test BOOLEAN NOT NULL DEFAULT FALSE;
+UPDATE subscriptions s SET test=TRUE WHERE source='ziina' AND NOT test AND EXISTS (SELECT 1 FROM checkouts c WHERE c.user_id=s.user_id AND c.plan_key=s.plan_key AND c.test AND c.status='completed'
+  AND c.completed_at BETWEEN s.created_at - interval '5 minutes' AND s.created_at + interval '5 minutes');
+CREATE TABLE IF NOT EXISTS run_logos (run_id INT PRIMARY KEY REFERENCES runs ON DELETE CASCADE, type TEXT NOT NULL, data BYTEA NOT NULL, src TEXT, w INT, h INT, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
 `;
 
 async function migrate() {

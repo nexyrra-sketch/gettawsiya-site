@@ -10,7 +10,7 @@ const A = require('./auth');
 const C = require('./config');
 const M = require('./mail');
 
-const GRACE_DAYS = 3, MIN_FILS = 200; // Ziina minimum is AED 2
+const GRACE_DAYS = 0, MIN_FILS = 200; // a plan ends exactly when its paid period ends // Ziina minimum is AED 2
 const ZIINA_IPS = ['3.29.184.186', '3.29.190.95', '20.233.47.127', '13.202.161.181'];
 const wrap = U.wrap;
 
@@ -38,8 +38,9 @@ async function getPlan(key) { return (await q('SELECT * FROM plans WHERE key=$1'
 async function freePlan() {
   return (await getPlan('free')) || { key: 'free', name_en: 'Free', name_ar: 'مجانية', price_fils: 0, interval: 'month', limits: { questions: 4, weekly: false, competitors: 0, manual_runs_per_week: 0 } };
 }
-const LIVE = `status='active' AND (current_period_end IS NULL OR current_period_end > now() - interval '${GRACE_DAYS} days')`;
-async function currentSub(userId) { return (await q(`SELECT * FROM subscriptions WHERE user_id=$1 AND ${LIVE} ORDER BY id DESC LIMIT 1`, [userId])).rows[0] || null; }
+/* a live plan: active and inside its paid period. Plans bought with Ziina test payments only count while test mode is on. */
+const LIVE_SQL = () => `status='active' AND (current_period_end IS NULL OR current_period_end > now() - interval '${GRACE_DAYS} days')${C.ziina.test() ? '' : ' AND NOT test'}`;
+async function currentSub(userId) { return (await q(`SELECT * FROM subscriptions WHERE user_id=$1 AND ${LIVE_SQL()} ORDER BY id DESC LIMIT 1`, [userId])).rows[0] || null; }
 async function entitlement(userId) {
   const sub = await currentSub(userId);
   const plan = (sub && (await getPlan(sub.plan_key))) || (await freePlan());
@@ -49,7 +50,15 @@ const pubPlan = (p) => ({ key: p.key, name_en: p.name_en, name_ar: p.name_ar, bl
   interval: p.interval, features_en: p.features_en, features_ar: p.features_ar, limits: p.limits, featured: p.featured });
 const pubSub = (s) => s && { plan_key: s.plan_key, status: s.current_period_end && new Date(s.current_period_end) < new Date() ? 'grace' : s.status, source: s.source,
   current_period_end: s.current_period_end, renew_soon: !!(s.current_period_end && new Date(s.current_period_end) - Date.now() < 10 * 86400e3) };
-const addPeriod = (from, interval) => { const d = new Date(from); if (interval === 'year') d.setFullYear(d.getFullYear() + 1); else d.setMonth(d.getMonth() + 1); return d; };
+/* one calendar month (or year) later, same time of day; 31 Jan -> 28/29 Feb, never spilling into the next month */
+const addPeriod = (from, interval) => {
+  const d = new Date(from), day = d.getUTCDate();
+  d.setUTCDate(1);
+  if (interval === 'year') d.setUTCFullYear(d.getUTCFullYear() + 1); else d.setUTCMonth(d.getUTCMonth() + 1);
+  const last = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(day, last));
+  return d;
+};
 
 /* What a checkout for this plan costs now, and what it buys.
    renew: same plan -> one more period added after the current end.
@@ -101,14 +110,14 @@ async function applyIntent(intentId) {
           user.lang === 'en' ? 'Thank you. Our team will contact you on WhatsApp within one working day to start.' : 'شكراً لك. سيتواصل فريقنا معك عبر واتساب خلال يوم عمل لبدء العمل.']);
         await c.query("INSERT INTO leads(kind,name,contact,intent,payload,lang,status) VALUES('project',$1,$2,'paid',$3,$4,'won')", [user.name, user.email, { plan: co.plan_key, amount: String(co.amount_fils / 100) }, user.lang]);
       } else {
-        const sub = (await c.query(`SELECT * FROM subscriptions WHERE user_id=$1 AND ${LIVE} ORDER BY id DESC LIMIT 1`, [co.user_id])).rows[0];
+        const sub = (await c.query(`SELECT * FROM subscriptions WHERE user_id=$1 AND ${LIVE_SQL()} ORDER BY id DESC LIMIT 1`, [co.user_id])).rows[0];
         if (co.kind === 'renew' && sub && sub.plan_key === co.plan_key) {
           const from = sub.current_period_end && new Date(sub.current_period_end) > new Date() ? sub.current_period_end : new Date();
           await c.query("UPDATE subscriptions SET current_period_end=$1, status='active', source='ziina', reminded_at=NULL, updated_at=now() WHERE id=$2", [addPeriod(from, plan.interval), sub.id]);
         } else {
           await c.query("UPDATE subscriptions SET status='canceled', updated_at=now() WHERE user_id=$1 AND status='active'", [co.user_id]);
           const end = new Date(addPeriod(new Date(), plan.interval).getTime() + (co.bonus_seconds || 0) * 1000);
-          await c.query("INSERT INTO subscriptions(user_id,business_id,plan_key,status,source,current_period_end) VALUES($1,$2,$3,'active','ziina',$4)", [co.user_id, biz ? biz.id : null, co.plan_key, end]);
+          await c.query("INSERT INTO subscriptions(user_id,business_id,plan_key,status,source,current_period_end,test) VALUES($1,$2,$3,'active','ziina',$4,$5)", [co.user_id, biz ? biz.id : null, co.plan_key, end, !!co.test]);
         }
         /* a paying client shows up in Admin > Leads (new) and the overview count, and by email below */
         if (co.kind !== 'renew') await c.query("INSERT INTO leads(kind,name,contact,intent,payload,lang,status) VALUES('project',$1,$2,'paid',$3,$4,'new')", [(co.test ? '[TEST] ' : '') + (user.name || ''), user.email, { plan: co.plan_key, amount: String(co.amount_fils / 100), kind: co.kind }, user.lang]);
@@ -190,9 +199,11 @@ function webhook() {
 
 /* daily: renewal reminders (7 days and 1 day before the end) and expiry after the grace period */
 async function housekeeping() {
-  await q(`UPDATE subscriptions SET status='expired', updated_at=now() WHERE status='active' AND current_period_end < now() - interval '${GRACE_DAYS} days'`);
+  await q(`UPDATE subscriptions SET status='expired', updated_at=now() WHERE status='active' AND current_period_end <= now() - interval '${GRACE_DAYS} days'`);
+  /* live mode: plans that came from test payments stop counting */
+  if (!C.ziina.test()) await q("UPDATE subscriptions SET status='expired', updated_at=now() WHERE status='active' AND test");
   const due = (await q(`SELECT s.*, u.email, u.lang, p.name_en, p.name_ar, p.price_fils FROM subscriptions s JOIN users u ON u.id=s.user_id JOIN plans p ON p.key=s.plan_key
-    WHERE s.status='active' AND s.source='ziina' AND s.current_period_end IS NOT NULL AND s.current_period_end < now() + interval '7 days'
+    WHERE s.status='active' AND s.source='ziina'${C.ziina.test() ? '' : ' AND NOT s.test'} AND s.current_period_end IS NOT NULL AND s.current_period_end > now() AND s.current_period_end < now() + interval '7 days'
       AND (s.reminded_at IS NULL OR (s.current_period_end < now() + interval '1 day' AND s.reminded_at < now() - interval '2 days'))`)).rows;
   for (const s of due) {
     await M.tpl('renew', s.email, s.lang, s.lang === 'en' ? s.name_en : s.name_ar, s.current_period_end, s.price_fils / 100, dashUrl(s));
@@ -201,4 +212,4 @@ async function housekeeping() {
   return due.length;
 }
 
-module.exports = { router, webhook, entitlement, getPlan, pubPlan, pubSub, applyIntent, housekeeping, ziina, verifySig, quote, GRACE_DAYS };
+module.exports = { router, webhook, entitlement, getPlan, pubPlan, pubSub, applyIntent, housekeeping, ziina, verifySig, quote, addPeriod, GRACE_DAYS };

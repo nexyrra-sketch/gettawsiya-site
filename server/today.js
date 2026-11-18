@@ -75,6 +75,8 @@ router.get('/today', U.wrap(async (req, res) => {
     { key: 'email', done: st.email, label: 'Email sending (Resend)', tab: 'auto', hint: 'Add RESEND_API_KEY and MAIL_FROM in Render > Environment.' },
     { key: 'domain', done: custom, label: custom ? 'Site address: ' + pub.replace(/^https:\/\//, '') : 'Use your own domain (PUBLIC_URL)', tab: 'auto',
       hint: 'Point gettawsiya.com to this service, then set PUBLIC_URL=https://gettawsiya.com in Render. Links in emails and reports use it.' },
+    { key: 'places', done: !!st.places, label: 'Google rating and reviews on reports', tab: 'auto', optional: true,
+      hint: 'Add GOOGLE_PLACES_API_KEY in Render > Environment. Reports then show each business\'s Google stars and review count.' },
     { key: 'booking', done: !!S.get('booking_url'), label: 'Booking link for free calls', tab: 'traffic', hint: 'Make a free 15-minute Cal.com event and paste the link in Traffic.', optional: true },
     { key: 'ziina', done: st.ziina, label: 'Ziina payments connected', tab: 'auto', hint: 'Add ZIINA_API_KEY in Render > Environment, then press Register webhook in Connections.' },
     { key: 'webhook', done: st.ziina && st.ziina_webhook, label: 'Ziina webhook secret', tab: 'auto', hint: 'Without it, payments are confirmed only when the customer returns to the site.' },

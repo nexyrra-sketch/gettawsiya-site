@@ -31,6 +31,18 @@ function parse(html, base) {
     try { out.links.push({ url: new URL(decode(href), base).toString(), href: decode(href), text: decode(txt.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, 80) }); } catch (e) {}
     return '';
   });
+  // brand: logo candidates, best first (structured data logo, logo image in the page, touch icon, large icon, og:image)
+  const abs = (u) => { try { const x = new URL(decode(String(u || '').trim()), base); return /^https?:$/.test(x.protocol) ? x.toString() : ''; } catch (e) { return ''; } };
+  const attr = (tag, a) => { const x = tag.match(new RegExp('\\b' + a + '\\s*=\\s*["\']([^"\']*)["\']', 'i')); return x ? x[1] : ''; };
+  const ldLogo = []; out.ld.forEach((o) => { const l = o.logo; [].concat(l || []).forEach((v) => ldLogo.push(typeof v === 'string' ? v : (v && (v.url || v.contentUrl)) || '')); });
+  const imgLogo = []; html.replace(/<img\b[^>]*>/gi, (tag) => { if (imgLogo.length < 3 && /logo/i.test(attr(tag, 'class') + ' ' + attr(tag, 'id') + ' ' + attr(tag, 'alt') + ' ' + attr(tag, 'src'))) { const src = attr(tag, 'src') || (attr(tag, 'data-src')) || (attr(tag, 'srcset').split(/\s/)[0]); if (src && !/^data:/i.test(src)) imgLogo.push(src); } return ''; });
+  const icons = []; html.replace(/<link\b[^>]*>/gi, (tag) => { const rel = attr(tag, 'rel').toLowerCase(); if (/icon/.test(rel)) { const sz = parseInt((attr(tag, 'sizes').match(/\d+/) || ['0'])[0], 10); icons.push({ u: attr(tag, 'href'), touch: /apple-touch/.test(rel), sz: sz || (/apple-touch/.test(rel) ? 180 : 16) }); } return ''; });
+  icons.sort((a, b) => (b.touch - a.touch) || (b.sz - a.sz));
+  const ogImg = m(/<meta[^>]+property=["']og:image(?::url)?["'][^>]*content=["']([^"']*)/i) || m(/<meta[^>]+content=["']([^"']*)["'][^>]*property=["']og:image["']/i);
+  out.logos = [...new Set(ldLogo.concat(imgLogo, icons.filter((i) => i.sz >= 64).map((i) => i.u)).map(abs).filter(Boolean))].slice(0, 6);
+  out.icons = [...new Set(icons.map((i) => abs(i.u)).filter(Boolean))].slice(0, 3);
+  out.ogImage = abs(ogImg);
+  out.theme = (m(/<meta[^>]+name=["']theme-color["'][^>]*content=["']([^"']*)/i).match(/^#[0-9a-f]{3,8}$/i) || [''])[0];
   out.text = decode(html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<noscript[\s\S]*?<\/noscript>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, 200000);
   return out;
 }
@@ -177,7 +189,7 @@ async function audit(site, facts = {}, opts = {}) {
       const heads = [].concat(...pages.map((p) => p.heads || [])).filter((x) => x.length > 2 && x.length < 60);
       res.signals = { loadMs, bytes: home.body.length, pages: pages.length, sitemapN, llms, robots: !!robots, blockedBots, ldErrors: pages.reduce((a, p) => a + (p.ldErrors || 0), 0),
         phones, emails, whatsapp: wa || null, social, address: addr ? (typeof biz.address === 'string' ? biz.address : [biz.address.streetAddress, biz.address.addressLocality].filter(Boolean).join(', ')) : '', hours: biz && (biz.openingHours || null),
-        ar: ar > 80, en: en > 300, heads: [...new Set(heads)].slice(0, 40), text: all.slice(0, 7000), h1: P0.h1, desc: P0.desc, title: P0.title, ldTypes: res.found.schema_types, bizType: biz ? types(biz) : '', areaText: addr };
+        ar: ar > 80, en: en > 300, logos: P0.logos, icons: P0.icons, ogImage: P0.ogImage, theme: P0.theme, home: home.finalUrl, heads: [...new Set(heads)].slice(0, 40), text: all.slice(0, 7000), h1: P0.h1, desc: P0.desc, title: P0.title, ldTypes: res.found.schema_types, bizType: biz ? types(biz) : '', areaText: addr };
       res.host = host;
     }
   }

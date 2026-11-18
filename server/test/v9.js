@@ -102,6 +102,22 @@ const visit = (path, h) => fetch(BASE + path, { headers: Object.assign({ 'User-A
   } else ok(false, 'a finished report to test previews on');
   const bad = await fetch(BASE + '/og/report/doesnotexistdoesnotexist.png?l=en'); ok(bad.status === 200 && bad.headers.get('content-type') === 'image/png', 'unknown report link falls back to the home picture');
 
+  console.log('real logo on reports');
+  r = await anon.req('POST', '/api/score-requests', { site: 'mondri.test', biz_name: 'Mondri Coffee', category: 'cafe', area: 'Al Quoz', consent: true, lang: 'en', source: 'score-page' });
+  ok(r.status === 200 || r.status === 201, 'scan with a logo on the site');
+  const md = await (async () => { for (let i = 0; i < 80; i++) { const s = (await admin.req('GET', '/api/admin/scans')).json.items.find((x) => x.site === 'mondri.test' && x.token && x.status === 'done'); if (s) return s; await sleep(800); } return null; })();
+  if (md) {
+    r = await anon.req('GET', '/en/report/' + md.token + '/');
+    const lg = (r.text.match(/<img src="(\/brand\/logo\/[A-Za-z0-9_-]+)"/) || [])[1];
+    ok(!!lg, 'report shows the business logo');
+    ok(/class="rp-contact"/.test(r.text) && /href="tel:\+971501234567"/.test(r.text) && /wa\.me\/971501234567/.test(r.text), 'report shows a contact card (call, WhatsApp)');
+    ok(/href="https:\/\/instagram\.com\/mondri"/.test(r.text), 'social profiles are real links');
+    if (lg) { const li = await fetch(BASE + lg); const lb = Buffer.from(await li.arrayBuffer()); ok(li.status === 200 && li.headers.get('content-type') === 'image/png' && lb.slice(1, 4).toString() === 'PNG' && /sandbox/.test(li.headers.get('content-security-policy') || ''), 'logo is served safely as an image'); }
+    const op = await fetch(BASE + '/og/report/' + md.token + '.png?l=en'); ok(op.status === 200 && (await op.arrayBuffer()).byteLength > 20000, 'preview picture with the logo');
+  } else ok(false, 'mondri scan finished');
+  if (pr) { r = await anon.req('GET', '/en/report/' + pr.token + '/'); ok(/rp-logo-mono/.test(r.text), 'no logo on the site: initials badge instead'); }
+  const nl = await fetch(BASE + '/brand/logo/doesnotexistdoesnotexist'); ok(nl.status === 404, 'unknown logo link is 404');
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

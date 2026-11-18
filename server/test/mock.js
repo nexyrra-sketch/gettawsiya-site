@@ -99,7 +99,7 @@ const api = http.createServer(async (req, res) => {
 });
 
 const GOOD = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Mondri Coffee | Specialty coffee in Al Quoz</title>
-<meta property="og:site_name" content="Mondri Coffee"><link rel="alternate" hreflang="ar" href="/ar/"><link rel="alternate" hreflang="en" href="/">
+<meta property="og:site_name" content="Mondri Coffee"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/logo.png"><meta name="theme-color" content="#2B5B4A"><link rel="alternate" hreflang="ar" href="/ar/"><link rel="alternate" hreflang="en" href="/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CafeOrCoffeeShop","name":"Mondri Coffee","address":{"@type":"PostalAddress","addressLocality":"Al Quoz, Dubai"},"openingHours":"Mo-Sa 07:00-18:00","priceRange":"AED 18-40","sameAs":["https://instagram.com/mondri","https://www.tripadvisor.com/mondri"]}</script></head>
 <body><h1>Mondri Coffee</h1><p>A calm roastery café in Al Quoz, Dubai. Pour-over from AED 22. Call +971 50 123 4567 or <a href="https://wa.me/971501234567">WhatsApp</a>.</p>
 <a href="/about/">About us</a> <a href="/menu/">Menu</a> <a href="/faq/">FAQ</a> <a href="/ar/">العربية</a>
@@ -122,6 +122,7 @@ const site = http.createServer((req, res) => {
 <h2>Teeth whitening</h2><h2>Dental implants</h2><h2>Invisalign</h2><p>Whitening from AED 900. Opening hours 9am to 9pm daily.</p><h2>What our patients say</h2><p>Testimonials: "Best dentist in JLT" – Sara.</p>
 <p>${'Our team of licensed dentists offers implants, whitening and Invisalign in JLT. '.repeat(8)}</p><p>عيادة أسنان في أبراج بحيرات جميرا في دبي تقدم زراعة الأسنان والتبييض والتقويم الشفاف لجميع أفراد العائلة.</p></body></html>`);
   }
+  if (host === 'mondri.test' && req.url === '/logo.png') { res.writeHead(200, { 'Content-Type': 'image/png' }); return res.end(require('fs').readFileSync(require('path').join(__dirname, '..', '..', 'src', 'static', 'assets', 'img', 'icon-192.png'))); }
   if (req.url === '/robots.txt') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end(host === 'ghost.test' ? 'User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nDisallow:' : 'User-agent: *\nAllow: /'); }
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   if (host === 'mondri.test') return res.end(req.url === '/' ? GOOD : `<html><head><title>Mondri Coffee</title></head><body><h1>Page ${req.url}</h1><p>Frequently asked questions and our story. Menu: flat white AED 22.</p></body></html>`);

@@ -24,6 +24,35 @@ function quote(text, n = 420) {
 const pillarName = (p, lang) => SC.PILLARS[p][lang === 'en' ? 'en' : 'ar'];
 const fText = (k, lang) => SC.F[k] ? SC.F[k][lang === 'en' ? 3 : 4] : { t: k, why: '', fix: '' };
 
+/* ------------------------------------------------------------------ business identity: real logo + contact card */
+const okUrl = (u) => (/^https?:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u) : '');
+const initials = (n) => { const w = String(n || '').replace(/^(the|al)\s+/i, '').split(/\s+/).filter(Boolean); return ((w[0] || '?')[0] + (w[1] ? w[1][0] : '')).toUpperCase(); };
+const SOCIAL = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok', linkedin: 'LinkedIn', youtube: 'YouTube', x: 'X', twitter: 'X', tripadvisor: 'Tripadvisor', talabat: 'Talabat', deliveroo: 'Deliveroo', zomato: 'Zomato', bayut: 'Bayut', propertyfinder: 'Property Finder', fresha: 'Fresha', booksy: 'Booksy', okadoc: 'Okadoc', yelp: 'Yelp' };
+const fmtTel = (t) => { const d = String(t || '').replace(/[^\d]/g, '').replace(/^00/, ''); const m = d.match(/^971(5\d)(\d{3})(\d{4})$/) || d.match(/^971([2-9])(\d{3})(\d{4})$/);
+  return m ? `+971 ${m[1]} ${m[2]} ${m[3]}` : (/^971/.test(d) ? '+' + d : String(t || '').trim()); };
+function logoMark(run, name, size) {
+  const p = run.profile || {};
+  if (p.logo && run.token) return `<span class="rp-logo${size ? ' rp-logo-' + size : ''}"><img src="/brand/logo/${esc(run.token)}" alt="${esc(name)} logo" loading="eager" decoding="async"></span>`;
+  const bg = /^#[0-9a-f]{6}$/i.test(p.theme || '') ? p.theme : '';
+  return `<span class="rp-logo rp-logo-mono${size ? ' rp-logo-' + size : ''}"${bg ? ` style="--mono:${bg}"` : ''} aria-hidden="true">${esc(initials(name))}</span>`;
+}
+function contactCard(run, site, T) {
+  const p = run.profile || {}, au = run.audit || {}, g = (au.found || {}).google;
+  const web = okUrl(p.website) || (site && !/^@|instagram\.com/i.test(site) ? 'https://' + String(site).replace(/^https?:\/\//i, '') : '');
+  const tel = String(p.phone || '').replace(/[^\d+]/g, '');
+  const wa = okUrl(p.whatsapp), mail = /^[\w.+-]+@[\w-]+\.[\w.]{2,}$/.test(p.email || '') ? p.email : '';
+  const chip = (href, label, val, cls) => `<li><a class="rp-cc rp-cc-${cls}" href="${esc(href)}" rel="noopener nofollow" ${/^https?:/.test(href) ? 'target="_blank"' : ''}><small>${esc(label)}</small><span dir="ltr">${esc(val)}</span></a></li>`;
+  const items = [];
+  if (web) { let h = web; try { h = new URL(web).hostname.replace(/^www\./, ''); } catch (e) {} items.push(chip(web, T.c_site, h, 'web')); }
+  if (tel.length >= 7) items.push(chip('tel:' + tel, T.c_call, fmtTel(p.phone), 'tel'));
+  if (wa) { const wn = (wa.match(/(\d{8,15})/) || [])[1]; items.push(chip(wa, T.c_wa, wn ? fmtTel(wn) : T.c_wa, 'wa')); }
+  if (mail) items.push(chip('mailto:' + mail, T.c_mail, mail, 'mail'));
+  if (g && g.rating) items.push(`<li>${okUrl(g.url) ? `<a class="rp-cc rp-cc-g" href="${esc(g.url)}" target="_blank" rel="noopener nofollow">` : '<span class="rp-cc rp-cc-g">'}<small>${esc(T.c_rating)}</small><span>★ ${esc(String(g.rating))} · ${esc(String(g.reviews || 0))} ${esc(T.c_reviews)}</span>${okUrl(g.url) ? '</a>' : '</span>'}</li>`);
+  const soc = Object.entries(p.social || {}).map(([k, u]) => [SOCIAL[k] || k, okUrl(u)]).filter((x) => x[1]).slice(0, 6);
+  const socials = soc.length ? `<li class="rp-cc-soc">${soc.map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener nofollow">${esc(k)}</a>`).join('')}</li>` : '';
+  return items.length || socials ? `<ul class="rp-contact">${items.join('')}${socials}</ul>` : '';
+}
+
 /* ------------------------------------------------------------------ full report */
 function report({ run, answers, lang, name, site, token, canonical }) {
   const T = I[lang], sc = run.scan, p = run.profile || {};
@@ -89,18 +118,21 @@ function report({ run, answers, lang, name, site, token, canonical }) {
   const profile = `<section class="ap-card rp-sec" aria-labelledby="pf-h"><h2 id="pf-h">${esc(T.profile_h)}</h2><dl class="ap-dl rp-dl">
     ${row('p_name', esc([p.name, p.name_ar && p.name_ar !== p.name ? p.name_ar : ''].filter(Boolean).join(' · ')))}${row('p_cat', esc(pick(lang, p.category, p.category_ar)))}
     ${row('p_where', esc([pick(lang, p.area, p.area_ar), pick(lang, p.city, p.city_ar)].filter(Boolean).join(en ? ', ' : '، ')))}${row('p_phone', esc(p.phone || ''), true)}${row('p_email', esc(p.email || ''), true)}
-    ${row('p_social', social.map(([k]) => esc(k)).join(' · '))}${row('p_lang', esc((p.languages || []).join(', ')))}${row('p_pages', String((run.audit && run.audit.pages || []).length || ''))}
+    ${row('p_social', social.map(([k, u]) => okUrl(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener nofollow">${esc(SOCIAL[k] || k)}</a>` : esc(SOCIAL[k] || k)).join(' · '))}${row('p_lang', esc((p.languages || []).join(', ')))}${row('p_pages', String((run.audit && run.audit.pages || []).length || ''))}
     ${row('p_services', (p.services || []).slice(0, 6).map((s) => `<span class="rp-tag" dir="auto">${esc(s)}</span>`).join(' '))}</dl>
     <p class="ap-fine"><a href="${esc(R.waHref(R.fill(T.cta_msg, { site: site || name, score: sc.overall })))}" rel="noopener">${esc(T.p_wrong)}</a></p></section>`;
 
   const siteErr = run.audit && run.audit.error ? `<p class="ap-note warn">${esc(R.fill(T.no_site, { err: run.audit.error }))}</p>` : '';
   const summary = pick(lang, run.summary_en, run.summary_ar);
-  const loc = [pick(lang, p.category, p.category_ar), [pick(lang, p.area, p.area_ar), pick(lang, p.city, p.city_ar)].filter(Boolean).join(en ? ', ' : '، ')].filter(Boolean).join(en ? ' in ' : ' في ');
+  const alt = [p.name, p.name_ar].filter((x) => x && x !== name && !/^https?:|\./.test(x))[0] || '';
+  const cap = (x) => (x ? x[0].toUpperCase() + x.slice(1) : x);
+  const loc = [cap(pick(lang, p.category, p.category_ar)), [pick(lang, p.area, p.area_ar), pick(lang, p.city, p.city_ar)].filter(Boolean).join(en ? ', ' : '، ')].filter(Boolean).join(en ? ' in ' : ' في ');
   return `<article class="wrap rp" data-report="${esc(token)}">
   ${siteErr}
   <header class="rp-hero">
-    <div class="rp-hero-l"><p class="v4-kicker">${esc(T.kicker)}</p><h1 dir="auto">${esc(name)}</h1>
-      <p class="rp-meta"><span dir="ltr">${esc(site || '')}</span>${loc ? ` · ${esc(loc)}` : ''} · ${esc(T.checked)} ${esc(R.fmtDate(run.finished_at || run.started_at, lang))}</p>
+    <div class="rp-hero-l"><div class="rp-id">${logoMark(run, name)}<div><p class="v4-kicker">${esc(T.kicker)}</p><h1 dir="auto">${esc(name)}</h1>${alt ? `<p class="rp-alt" dir="auto">${esc(alt)}</p>` : ''}</div></div>
+      <p class="rp-meta">${loc ? `${esc(loc)} · ` : ''}${esc(T.checked)} ${esc(R.fmtDate(run.finished_at || run.started_at, lang))}</p>
+      ${contactCard(run, site, T)}
       <p class="rp-verdict rp-t-${tone(sc.overall)}"><b>${esc(g[en ? 0 : 1])}.</b> ${esc(T.grade_t[sc.grade])}</p>
       <div class="rp-actions"><button class="v4-btn v4-btn-line v4-btn-sm" type="button" data-print>${esc(T.pdf)}</button>
         <button class="v4-btn v4-btn-line v4-btn-sm" type="button" data-copy="${esc(url)}" data-done="${esc(T.copied)}">${esc(T.copy)}</button>
@@ -164,7 +196,7 @@ function progress({ lang, name, site, a, b, answersA, answersB, tasks, token }) 
   const work = tasks.length ? `<ul class="rp-klist rp-work">${tasks.map((t) => `<li><b dir="auto">${t.finding_key && SC.LBL[t.finding_key] ? '✓ ' + esc(SC.LBL[t.finding_key][en ? 0 : 1]) : esc(t.title)}</b><small>${esc(R.fmtDate(t.done_at, lang))}</small>${t.client_note ? `<p dir="auto">${esc(t.client_note)}</p>` : ''}</li>`).join('')}</ul>` : `<p class="ap-fine">${esc(T.nothing)}</p>`;
   return `<article class="wrap rp" data-progress="${esc(token)}">
   <header class="rp-hero">
-    <div class="rp-hero-l"><p class="v4-kicker">${esc(T.prog_k)}</p><h1 dir="auto">${esc(name)}</h1>
+    <div class="rp-hero-l"><div class="rp-id">${logoMark((b.profile || {}).logo ? b : a, name)}<div><p class="v4-kicker">${esc(T.prog_k)}</p><h1 dir="auto">${esc(name)}</h1></div></div>
       <p class="rp-meta"><span dir="ltr">${esc(site || '')}</span> · ${esc(R.fill(T.prog_from, { a: R.fmtDate(a.finished_at, lang), b: R.fmtDate(b.finished_at, lang) }))}</p>
       <p class="rp-verdict">${delta}</p>
       <div class="rp-actions"><button class="v4-btn v4-btn-line v4-btn-sm" type="button" data-print>${esc(T.pdf)}</button>
@@ -185,4 +217,4 @@ function progress({ lang, name, site, a, b, answersA, answersB, tasks, token }) 
 </article>`;
 }
 
-module.exports = { report, live, progress, ring, tone };
+module.exports = { report, live, progress, ring, tone, logoMark, contactCard };

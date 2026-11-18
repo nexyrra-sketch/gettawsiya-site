@@ -57,7 +57,14 @@ const tone = (n) => (n >= 70 ? '#4CC38A' : n >= 40 ? '#E8A93C' : '#EE6B58');
 /* ----------------------------------------------------------------------------------------------
    Report preview: the business name, its score out of 100 and who AI names instead.
    ---------------------------------------------------------------------------------------------- */
-function reportSvg({ lang, name, score, named, total, measured, rival }) {
+function logoTile(ar, logo) {
+  if (!logo || !logo.data || !/^image\/(png|jpeg|gif|webp|svg\+xml)$/.test(logo.type)) return '';
+  const s = 104, x = ar ? 70 : 1130 - s, y = 34, pad = 12;
+  const uri = `data:${logo.type};base64,${Buffer.from(logo.data).toString('base64')}`;
+  return `<g><clipPath id="lc"><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="24"/></clipPath><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="24" fill="#FFFFFF"/>
+  <image clip-path="url(#lc)" x="${x + pad}" y="${y + pad}" width="${s - 2 * pad}" height="${s - 2 * pad}" preserveAspectRatio="xMidYMid meet" href="${uri}"/></g>`;
+}
+function reportSvg({ lang, name, score, named, total, measured, rival, logo }) {
   const ar = lang !== 'en', n = Math.max(0, Math.min(100, Math.round(Number(score) || 0)));
   const x = ar ? 1130 : 70, anchor = ar ? 'end' : 'start', cx = ar ? 285 : 915, cy = 330, r = 128, C = 2 * Math.PI * r;
   const nameSize = name.length > 34 ? 50 : name.length > 22 ? 58 : 68;
@@ -76,7 +83,7 @@ function reportSvg({ lang, name, score, named, total, measured, rival }) {
     : `<text x="${x}" y="${y + i * 40 + 2}" text-anchor="${anchor}" font-family="${BOLD}" font-size="34" fill="${BRASS}">${esc(l.rival)}</text>`).join('');
   const subEnd = y + (lines.length - 1) * 40;
   const cta = pill(ar, ar ? 'شاهد التقرير الكامل' : 'See the full report', Math.max(470, subEnd + 40));
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">${defs}${brandRow(ar)}
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">${defs}${brandRow(ar)}${logoTile(ar, logo)}
   <text x="${x}" y="150" text-anchor="${anchor}" font-family="${BOLD}" font-size="${ar ? 26 : 22}" letter-spacing="${ar ? 0 : 3}" fill="${BRASS}">${esc(kicker)}</text>
   ${nameSvg}${sub}${cta}
   <g><circle cx="${cx}" cy="${cy}" r="${r + 38}" fill="#FFFFFF" fill-opacity="0.03"/>
@@ -140,9 +147,9 @@ function cached(key, make) {
 }
 function reportPng(o) {
   const name = clip(o.name, 80) || 'Your business';
-  const key = ['r', o.lang, name, Math.round(o.score), o.named, o.total, o.measured ? 1 : 0, clip(o.rival, 28)].join('|');
-  const svg = reportSvg(Object.assign({}, o, { name, rival: clip(o.rival, 40) }));
-  return cached(key, () => png(o.lang === 'en' ? svg : rtl(svg)));
+  const key = ['r', o.lang, name, Math.round(o.score), o.named, o.total, o.measured ? 1 : 0, clip(o.rival, 28), o.logo ? o.logo.data.length : 0, o.logoKey || ''].join('|');
+  const draw = (lg) => { const svg = reportSvg(Object.assign({}, o, { name, rival: clip(o.rival, 40), logo: lg })); return png(o.lang === 'en' ? svg : rtl(svg)); };
+  return cached(key, () => { if (o.logo) { try { return draw(o.logo); } catch (e) { /* an image resvg cannot read: draw without it */ } } return draw(null); });
 }
 const homePng = (lang) => cached('h|' + lang, () => png(lang === 'en' ? homeSvg(lang) : rtl(homeSvg(lang))));
 

@@ -160,7 +160,7 @@
         sec("Scan any business", [h("p", { class: "ap-fine" }, "Paste a website and get the full report in 1 to 3 minutes. Admin scans skip the daily free limit. Use it on prospects before you call them."), form]),
         sec("All scans and leads", [tabs, table([
           ["When", function (x) { return fmt(x.created_at); }],
-          ["Business", function (x) { return h("div", null, h("b", { dir: "auto" }, x.business_name || x.name || "–"), h("br"), h("span", { dir: "ltr", class: "ap-meta" }, x.site), x.category ? h("span", { class: "ap-meta" }, " · " + x.category) : null); }],
+          ["Business", function (x) { return h("div", { class: "tw-biz" }, x.has_logo ? h("img", { class: "tw-blogo", src: "/brand/logo/" + x.token, alt: "", loading: "lazy" }) : null, h("b", { dir: "auto" }, x.business_name || x.name || "–"), h("br"), h("span", { dir: "ltr", class: "ap-meta" }, x.site), x.category ? h("span", { class: "ap-meta" }, " · " + x.category) : null); }],
           ["Score", function (x) { return x.run_status === "running" ? chip("running " + (x.stage || "")) : x.run_status === "failed" ? chip("failed") : scoreBadge(x.overall, x.grade); }],
           ["AI named", function (x) { return x.answers_total ? x.answers_named + " / " + x.answers_total : "–"; }],
           ["From", function (x) { return (x.source || "") + (x.ref_code ? " · ref " + x.ref_code : ""); }],

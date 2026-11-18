@@ -9,6 +9,7 @@ const R = require('../render');
 const { audit, norm } = require('./audit');
 const AS = require('./assistants');
 const PR = require('./profile');
+const BR = require('./brand');
 const SC = require('./scan');
 
 const LABEL = (k) => (C.ai[k] ? C.ai[k].label : k);
@@ -36,6 +37,13 @@ async function execRun({ kind, business, request, questions, n = 4, lang }) {
       : { name: request.biz_name, area: request.area, city: request.city };
     const au = await audit(site, facts, { onStage: (st, d) => { Object.assign(prog, d); return save('site'); } });
     prog.pages = (au.pages || []).length; await save('profile');
+    /* the business's real logo, fetched while the assistants answer */
+    const logoP = au.error ? Promise.resolve(null) : BR.find(au.signals, au.host).then(async (lg) => {
+      if (!lg) return null;
+      await q('INSERT INTO run_logos(run_id,type,data,src,w,h) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT (run_id) DO UPDATE SET type=EXCLUDED.type, data=EXCLUDED.data, src=EXCLUDED.src, w=EXCLUDED.w, h=EXCLUDED.h',
+        [run.id, lg.type, lg.data, String(lg.src || '').slice(0, 500), lg.w || null, lg.h || null]);
+      return lg;
+    }).catch(() => null);
     const hint = business ? { name: business.name_en || business.name_ar, category: business.category || business.category_ar, area: business.area, city: business.city }
       : { name: request.biz_name, category: request.category, area: request.area, city: request.city && request.city !== 'Dubai' ? request.city : '' };
     const cleanHint = Object.fromEntries(Object.entries(hint).filter(([, v]) => v));
@@ -72,6 +80,11 @@ async function execRun({ kind, business, request, questions, n = 4, lang }) {
     await save('report');
     const competitors = [...trackedCounts].map(([nm, c]) => ({ name: nm, count: c, tracked: true }))
       .concat([...counts.values()].filter((e) => !tracked.some((t) => norm(t) === norm(e.name))).sort((a, b) => b.count - a.count).slice(0, 15));
+    const logo = await logoP;
+    if (logo) profile.logo = logo.type;
+    if (au.signals && au.signals.theme) profile.theme = au.signals.theme;
+    if (au.signals && au.signals.home) profile.website = au.signals.home;
+    await q('UPDATE runs SET profile=$1 WHERE id=$2', [JSON.stringify(profile), run.id]);
     const sc = SC.compute(au, rows, profile);
     const r = (await q(`UPDATE runs SET status='done', stage='done', audit=$1, answers_total=$2, answers_named=$3, assistants=$4, competitors=$5, scan=$6, summary_en=$7, summary_ar=$8, progress=$9, cost_usd=$11, finished_at=now() WHERE id=$10 RETURNING *`,
       [au, total, named, JSON.stringify(on.map(LABEL)), JSON.stringify(competitors), JSON.stringify(sc), SC.summary(sc, bname, 'en'), SC.summary(sc, profile.name_ar || bname, 'ar'), JSON.stringify(prog), run.id, +spent.toFixed(4)])).rows[0];
